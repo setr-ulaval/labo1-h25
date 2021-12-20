@@ -1,0 +1,6 @@
+#!/bin/bash
+DUCKDNS_LOCALIP=`hostname -I`
+DUCKDNS_TOKEN=ECRIRE VOTRE TOKEN DUCKDNS ICI
+DUCKDNS_DOMAINS=ECRIRE VOTRE DOMAINS DUCKDNS ICI
+DUCKDNS_LOGFILE=/var/log/duckdns.log
+echo url="https://www.duckdns.org/update?domains=$DUCKDNS_DOMAINS&token=$DUCKDNS_TOKEN&ip=$DUCKDNS_LOCALIP" | curl -k -o $DUCKDNS_LOGFILE -K -
