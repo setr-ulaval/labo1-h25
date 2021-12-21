@@ -15,7 +15,7 @@ Ce travail pratique vise les objectifs suivants :
 
 ## 2. Préparation du Raspberry Pi
 
-La carte MicroSD du kit qui vous a été fourni contient déjà l'image système nécessaire au cours. Toutefois, dans le cas où vous voudriez revenir à l'état initial de l'image, ou simplement créer une copie, vous pouvez télécharger le fichier *.img* contenant l'[image du cours](http://wcours.gel.ulaval.ca/GIF3004/setr_h2021.v1.img.zip).
+La carte MicroSD du kit qui vous a été fourni contient déjà l'image système nécessaire au cours. Toutefois, dans le cas où vous voudriez revenir à l'état initial de l'image, ou simplement créer une copie, vous pouvez télécharger le fichier *.img* contenant l'[image du cours](http://wcours.gel.ulaval.ca/GIF3004/setr_h2022.v1.img.zip).
 
 La première des tâches à réaliser est de démarrer le Raspberry Pi Zero W, de mettre en place sa configuration initiale et de vous assurer de son bon fonctionnement. Par la suite, vous devrez installer sur votre ordinateur l'environnement de développement et de compilation croisée qui vous servira tout au long de la session. 
 
@@ -52,6 +52,7 @@ sudo wpa_supplicant -c/etc/wpa_supplicant/wpa_supplicant.conf -iwlan0 -d
 Si il n'y a pas eu d'erreur, rebootez, sinon en cas d'erreur de syntaxe, le message sera assez explicite.
 Après redémarrage, vérifiez avec un `ifconfig` que vous êtes bien connecté, vous devriez notamment avoir une adresse IP (*inet* dans la section *wlan0*).
 
+> **Note** : Si vous désirez utiliser *Eduroam*, vous devrez adapter le contenu du fichier de configuration.  Un example se trouve dans le fichier `/etc/wpa_supplicant/wpa_supplicant.conf.eduroam`.
 
 <!---
 Vous devriez trouver la configuration suivante dans `/etc/wpa_supplicant/wpa_supplicant.conf`:
@@ -118,11 +119,11 @@ Changez les permissions permettant l'exécution du script avec la commande `sudo
 Ce cours requiert l'utilisation d'un système GNU/Linux. Dans le cadre du cours, vous avez deux options :
 
 <!--- * Utiliser un des ordinateurs du laboratoire informatique 0105, sur lesquels les logiciels et outils nécessaires au cours sont pré-installés; -->
-* Télécharger une machine virtuelle [VirtualBox](https://www.virtualbox.org/) à [l'adresse suivante](http://wcours.gel.ulaval.ca/GIF3004/setr-VM-h2021.zip) -- le nom d'utilisateur est `setr` et le mot de passe `gif3004`, vous n'avez pas accès à la commande `sudo`, mais pouvez passer en mode _root_ en utilisant `su`;
+* Télécharger une machine virtuelle [VirtualBox](https://www.virtualbox.org/) à [l'adresse suivante](http://wcours.gel.ulaval.ca/GIF3004/setr-VM-h2022.zip) -- le nom d'utilisateur est `setr` et le mot de passe `gif3004`, vous n'avez pas accès à la commande `sudo`, mais pouvez passer en mode _root_ en utilisant `su`;
 * Utiliser votre propre installation Linux, notez que nous ne pouvons dans ce cas garantir que les étapes d'installation et de configuration seront exactement les mêmes (vous pouvez passer à la section suivante si vous choisissez cette option).
 
 Commencez par décompresser le fichier .zip téléchargé, il devrait contenir un unique fichier .div.
-Pour importer la machine virtuelle dans VirtualBox, cliquez sur *Nouvelle*. Vous pouvez choisir le nom de la machine virtuelle, pour *Type* sélectionnez *Other* et *Debian (64bit)* pour *Version*. Validez en appuyant sur *Suivant* et choisissez la mémoire que vous allez allouer à la machine virtuelle (vous pourrez toujours ajuster plus tard au besoin), *Suivant*. Sélectionner la dernière option *Utiliser un fichier de disque dur virtuel existant* et choisissez le fichier .vdi en cliquant qur l'icône en forme de dossier. *Créer* pour finaliser l'étape de création de la machine virtuelle.
+Pour importer la machine virtuelle dans VirtualBox, cliquez sur *Nouvelle*. Vous pouvez choisir le nom de la machine virtuelle, pour *Type* sélectionnez *Linux* et *Fedora (64bit)* pour *Version*. Validez en appuyant sur *Suivant* et choisissez la mémoire que vous allez allouer à la machine virtuelle (vous pourrez toujours ajuster plus tard au besoin), *Suivant*. Sélectionner la dernière option *Utiliser un fichier de disque dur virtuel existant* et choisissez le fichier .vdi en cliquant qur l'icône en forme de dossier. *Créer* pour finaliser l'étape de création de la machine virtuelle.
 
 Vous pouvez ensuite la configurer avec *Clic-droit/Configuration...*.
 Sous *Système/Processeur*, choisissez le nombre de CPU à allouer.
@@ -148,11 +149,17 @@ Notez que la compilation de cet environnement peut prendre un certain temps.
 Pour installer Crosstool-NG, récupérez d'abord la version utilisée dans le cours, puis exécutez le script `bootstrap` :
 
 ```
+$ git clone https://github.com/crosstool-ng/crosstool-ng.git
+$ cd crosstool-ng
+$ ./bootstrap
+```
+<!--- 
+```
 $ git clone https://github.com/setr-ulaval/crosstool-ng.git
 $ cd crosstool-ng
 $ ./bootstrap
 ```
-
+-->
 Dans ce même répertoire, utilisez `./configure` pour préparer la compilation et `make` pour le compiler :
 
 ```
@@ -160,7 +167,14 @@ $ ./configure --prefix=$HOME/crosstool-install
 $ make && make install
 ```
 
-Le paramètre _prefix_ indique l'endroit où les outils de Crosstool-NG doivent être installés. Vous devrez également ajouter ce chemin d'installation dans [votre variable d'environnement PATH](https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path).
+Le paramètre _prefix_ indique l'endroit où les outils de Crosstool-NG doivent être installés. Vous devrez également ajouter ce chemin d'installation dans [votre variable d'environnement PATH](https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path).  
+* Si vous travaillez à l'aide de la machine virtuelle, cette configuration sera déjà faite.  
+* Pour les ordinateurs du 0103/0105, vous devrez ajouter les 2 lignes suivante dans le fichier `~/.bashrc`
+```
+unset LD_LIBRARY_PATH
+export PATH=$PATH:$HOME/crosstool-install/bin
+```
+
 
 > **Note** : il se peut que l'étape du `configure` échoue si vous effectuez l'installation sur votre ordinateur (sans utiliser la machine virtuelle du cours). Assurez-vous dans ce cas [d'avoir installé toutes les dépendances de Crosstool-NG](https://crosstool-ng.github.io/docs/os-setup/). Cette étape a déjà été effectuée pour vous sur les ordinateurs du lab ou avec la machine virtuelle fournie.
 
@@ -231,7 +245,7 @@ Dans la section _Operating System_, remplacez :
 
 Dans la dernière étape, `chemin vers les sources du kernel` doit être le chemin absolu vers le dossier contenant les sources du noyau Linux utilisé sur le Raspberry Pi. Celui-ci peut-être situé à des endroits différents selon votre installation:
 
-<!--- * Si vous travaillez *sur les ordinateurs du laboratoire 0105*, le chemin est `/opt/rPi/linux-rpi-4.19.y-rt` -->
+* Si vous travaillez *sur les ordinateurs du laboratoire 0103/0105*, le chemin est `/opt/linux-rpi-4.19.y-rt` 
 * Si vous travaillez *sur la machine virtuelle Fedora fournie*, le chemin est `/home/setr/rPi/linux-rpi-4.19.y-rt`
 * Si vous travaillez *sur votre propre ordinateur*, téléchargez [l'archive suivante](http://wcours.gel.ulaval.ca/GIF3004/linux.tar), décompressez-la et indiquez son chemin absolu.
 
@@ -307,7 +321,7 @@ $ find . -lname '/*' | while read l ; do   echo ln -sf $(echo $(echo $l | sed 's
 
 ## 5. Configuration de l'environnement de développement
 
-Dans le cadre du cours, nous allons utiliser [Visual Studio Code](https://code.visualstudio.com/updates/v1_19) (ci-après abbrévié VSC). Utilisez la version 1.19 comme les versions plus récentes causent certaines complications rendant la configuration initiale plus ardue. Vous êtes libres d'utiliser un autre environnement de développement, mais vous _devez_ travailler en compilation croisée et nous ne pourrons potentiellement pas vous aider si vous choisissez un autre logiciel.
+Dans le cadre du cours, nous allons utiliser [Visual Studio Code](https://packages.microsoft.com/yumrepos/vscode/code-1.33.1-1554971173.el7.x86_64.rpm) (ci-après abbrévié VSC). Utilisez la version 1.31.1 comme les versions plus récentes causent certaines complications rendant la configuration initiale plus ardue. Vous êtes libres d'utiliser un autre environnement de développement, mais vous _devez_ travailler en compilation croisée et nous ne pourrons potentiellement pas vous aider si vous choisissez un autre logiciel.
 
 ### 5.1. Préparation d'une configuration CMake
 
@@ -378,6 +392,13 @@ $ chmod +x src/syncAndStartGDB.sh
 
 Par la suite, dans VSC, allez dans `Fichier > Ouvrir un dossier` et sélectionnez _labo1-h21/src_. Vous devriez alors pouvoir accéder, via le menu de gauche, aux fichiers `tp1.c` et `CMakeLists.txt`.
 
+À l'ouverture d'un nouveau projet, quelques notifications `CMake` apparaitront.  Assurez-vous de répondre *Oui* / *Autoriser*
+
+
+<img src="img/vsc_cmake_cfg.png" style="width:410px"/> 
+<img src="img/vsc_cmake_IS.png" style="width:410px"/>
+
+
 <!--- #### Configuration des répertoires de recherche d'en-têtes
 
 VSC (et son extension C/C++) fournit plusieurs utilitaires pour faciliter la programmation. Pour les utiliser au maximum, il faut indiquer à VSC où aller chercher les fichiers _headers_. Dans VSC, allez dans le menu `Afficher`, puis `Palette de commandes`. Dans la ligne d'édition qui apparaît en haut de l'écran, écrivez `C/Cpp` puis sélectionnez `C/Cpp: Edit Configurations`. Dans le fichier qui s'ouvre, repérez la section concernant Linux, puis, dans l'option "IncludePaths", ajoutez le chemin complet vers le répertoire `sysroot/usr/include`. Par exemple, si vous utilisez la machine virtuelle fournie, le fichier de configuration devrait ressembler à celui-ci :
@@ -393,6 +414,10 @@ Il est maintenant temps de tester votre chaîne de compilation croisée. Dans VS
 
 Dans la ligne d'édition qui apparaît en haut de l'écran, écrivez `CMake` (remarquez comment VSC modifie ses suggestions au fur et à mesure), puis sélectionnez `CMake Build`. VSC vous demandera alors de choisir entre `Debug`, `Release`, `MinSizeRel` et `RelWithDebInfo`. Pour le moment, sélectionnez `Debug`, mais sachez que `Release` pourra être fort utile lorsque vous aurez besoin du maximum de performance possible. Notez que vous pouvez également utiliser la touche F7 comme raccourci.
 
+Finalement, assurez-vous de désactiver les *Kits* pour forcer `CMake` à utiliser les configurations du projet.  Cliquez sur *No kits selected* et sélectionnez *Unspecified*
+
+<img src="img/vsc_kit2.png" style="width:390px"/>
+<img src="img/vsc_kit1.png" style="width:440px"/>
 
 ### 6.3. Exécution et débogage
 
