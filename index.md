@@ -98,7 +98,7 @@ Nous recommandons finalement l'installation et l'utilisation d'un résolveur DNS
 
 Pour ce faire connectez-vous à [Duck DNS](https://www.duckdns.org). Créez un nom pour votre RPi.
 
-Cependant, cette information n'est pas adéquate dans le contexte qui nous intéresse, comme on veut utiliser les adresses locales pour se connecter au RPi directement. Pour ce faire, voici un [script shell](https://setr-ulaval.github.io/labo1-h21/etc/duckdns.sh) que vous pouvez copier dans `/usr/local/bin/duckdns.sh` sur votre RPi.
+Cependant, cette information n'est pas adéquate dans le contexte qui nous intéresse, comme on veut utiliser les adresses locales pour se connecter au RPi directement. Pour ce faire, voici un [script shell](https://setr-ulaval.github.io/labo1-h22/etc/duckdns.sh) que vous pouvez copier dans `/usr/local/bin/duckdns.sh` sur votre RPi.
 
 ```
 #!/bin/bash
@@ -191,7 +191,7 @@ $ cd ct-config-rpi-zero
 Au lieu de partir d'une configuration vide, nous allons utiliser le fichier de configuration fourni par le distributeur des Raspberry Pi. Dans le dossier `ct-config-rpi-zero`, téléchargez le fichier suivant et nommez le `.config` :
 
 ```
-$ wget -O .config https://setr-ulaval.github.io/labo1-h21/etc/ct-ng-config
+$ wget -O .config https://setr-ulaval.github.io/labo1-h22/etc/ct-ng-config
 ```
 
 Par la suite, lancez l'utilitaire de configuration de Crosstool-NG :
@@ -381,7 +381,7 @@ Nous allons maintenant configurer un nouveau projet pour ce laboratoire.
 Sur VSC, les projets sont simplement des dossiers. Créez donc dans votre dossier personnel un nouveau dossier nommé _projets_ puis, dans celui-ci, clonez le dépôt Git suivant :
 
 ```
-$ git clone https://github.com/setr-ulaval/labo1-h21.git
+$ git clone https://github.com/setr-ulaval/labo1-h22.git
 ```
 
 Rendez également le script `src/syncAndStartGDB.sh` exécutable :
@@ -390,7 +390,7 @@ Rendez également le script `src/syncAndStartGDB.sh` exécutable :
 $ chmod +x src/syncAndStartGDB.sh
 ```
 
-Par la suite, dans VSC, allez dans `Fichier > Ouvrir un dossier` et sélectionnez _labo1-h21/src_. Vous devriez alors pouvoir accéder, via le menu de gauche, aux fichiers `tp1.c` et `CMakeLists.txt`.
+Par la suite, dans VSC, allez dans `Fichier > Ouvrir un dossier` et sélectionnez _labo1-h22/src_. Vous devriez alors pouvoir accéder, via le menu de gauche, aux fichiers `tp1.c` et `CMakeLists.txt`.
 
 À l'ouverture d'un nouveau projet, quelques notifications `CMake` apparaitront.  Assurez-vous de répondre *Oui* / *Autoriser*
 
@@ -457,7 +457,7 @@ Modifiez maintenant l'argument d'entrée, afin d'obtenir une initialisation de l
 
 ## 7. Modalités d'évaluation
 
-Ce travail est **individuel**. Aucun rapport n'est à remettre, mais vous devez être en mesure de démontrer que votre environnement de développement est fonctionnel et que vous savez utiliser ses fonctions basiques dans une visioconférence Zoom. Cette évaluation sera faite lors des séances de laboratoire du **29 janvier 2021** et du **5 février 2021**. Ce travail compte pour **5%** de la note totale du cours.
+Ce travail est **individuel**. Aucun rapport n'est à remettre, mais vous devez être en mesure de démontrer que votre environnement de développement est fonctionnel et que vous savez utiliser ses fonctions basiques dans une visioconférence Zoom. Cette évaluation sera faite lors des séances de laboratoire du **29 janvier 2022** et du **5 février 2022**. Ce travail compte pour **5%** de la note totale du cours.
 
 Le barême d'évaluation détaillé sera le suivant (laboratoire noté sur 20 pts):
 
