@@ -141,7 +141,7 @@ Le Raspberry Pi possède un processeur dont l'architecture (ARM) diffère de cel
 4. Synchroniser les librairies et en-têtes depuis le Raspberry Pi Zero;
 5. Préparer une configuration CMake pour la compilation croisée.
 
-Notez que la compilation de cet environnement peut prendre un certain temps.
+Notez que la compilation de cet environnement peut prendre un certain temps. Cette installation doit être faite *que vous utilisiez ou non la machine virtuelle fournie*.
 
 
 ### 4.1. Installation de Crosstool-NG
@@ -321,7 +321,7 @@ $ find . -lname '/*' | while read l ; do   echo ln -sf $(echo $(echo $l | sed 's
 
 ## 5. Configuration de l'environnement de développement
 
-Dans le cadre du cours, nous allons utiliser [Visual Studio Code](https://packages.microsoft.com/yumrepos/vscode/code-1.33.1-1554971173.el7.x86_64.rpm) (ci-après abbrévié VSC). Utilisez la version 1.31.1 comme les versions plus récentes causent certaines complications rendant la configuration initiale plus ardue. Vous êtes libres d'utiliser un autre environnement de développement, mais vous _devez_ travailler en compilation croisée et nous ne pourrons potentiellement pas vous aider si vous choisissez un autre logiciel.
+Dans le cadre du cours, nous allons utiliser [Visual Studio Code](https://packages.microsoft.com/yumrepos/vscode/code-1.33.1-1554971173.el7.x86_64.rpm) (ci-après abbrévié VSC). Nous vous recommandons de ne pas utiliser une version plus récente que 1.31.1 (la version avec laquelle le laboratoire a été testée). Il n'y a toutefois pas de contre-indication particulière à utiliser la dernière version, mais certaines options de configuration pourraient être différentes. Vous êtes par ailleurs libres d'utiliser un autre environnement de développement, à votre convenance, mais vous _devez obligatoirement_ travailler en compilation croisée (autrement dit, le binaire doit être compilé sur _votre_ ordinateur et non le Raspberry Pi, et vous devez être en mesure de déboguer à partir de votre ordinateur) et nous ne pourrons potentiellement pas vous aider si vous choisissez un autre logiciel.
 
 ### 5.1. Préparation d'une configuration CMake
 
@@ -425,13 +425,25 @@ Si la compilation se termine avec succès, vous pouvez maintenant passer à l'é
 
 Une fois cela fait, vous pouvez synchroniser l'exécutable et lancer le débogage en allant dans le menu _Déboguer_ puis _Lancer le débogage_ (la touche F5 est un raccourci plus rapide ayant le même effet). Après quelques secondes (le script utilise rsync pour synchroniser les fichiers vers le Raspberry Pi), l'interface de débogage devrait s'afficher et vous permettre de déboguer le programme à distance.
 
-À noter toutefois que lors d'un débogage, vous n'aurez pas accès à STDIN ou STDOUT. Aussi pour saisir des données ou voir les sorties du programme, il faut l'exécuter à distance sur le Raspberry Pi (àprès l'avoir synchroniser bien sûr). 
-Pour cela, les commandes 
+Lors du débogage, le programme s'exécute sur le Raspberry Pi et vous n'avez donc pas accès à STDIN ou STDOUT. Par défaut, STDOUT (c'est-à-dire la sortie standard du programme, celle qui est utilisée par exemple par `printf()`) est _redirigé_ vers le fichier `/home/pi/capture_stdout`. Vous pouvez donc voir, _après l'exécution_ de votre programme, le texte qu'il a produit en sortant en lisant ce fichier. Il est également possible de faire en sorte de le voir en temps réel dans VScode, en lançant, dans un second terminal, la commande suivante :
 ```
-rsync -av build/SETR_TP1 pi@addr_pi:projects/laboratoire1
-ssh pi@addr_pi -t ./projects/laboratoire1/SETR_TP1
-``` 
-à exécuter depuis la racine du laboratoire pourraient vous être utiles (veillez à bien remplacer `addr_pi` par l'adresse IP de votre Raspberry).
+ssh pi@adresse_ip_ou_nom_dhote_de_votre_raspberry_pi tail -f -s 0.5 /home/pi/capture-stdout
+```
+
+Cette commande va suivre les mises à jour du fichier `/home/pi/capture-stdout` à toutes les 0.5 seconde. Elle ne s'arrêtera toutefois pas automatiquement lorsque le débogage sera terminé, utilisez Ctrl-C pour le faire manuellement. La sortie _d'erreur_ standard (STDERR) est elle aussi capturée, mais dans le fichier `/home/pi/capture-stderr` cette fois.
+
+En ce qui concerne STDIN (les entrées _reçues_ par le programme, à partir du clavier), vous pouvez simuler ces entrées en les mettant dans un fichier (par exemple `/home/pi/entree_programme`) et en modifiant le fichier `src/syncAndStartGDB.sh` pour remplacer `/dev/null` à la toute fin de la ligne par votre fichier. Par exemple :
+```
+# Le contenu orignal
+ssh pi@$2 "rm -f /home/pi/capture-stdout; rm -f /home/pi/capture-stderr; nohup gdbserver :4567 /home/pi/projects/$bn/SETR_TP1 > /home/pi/capture-stdout 2> /home/pi/capture-stderr < /dev/null &"
+
+# devient 
+ssh pi@$2 "rm -f /home/pi/capture-stdout; rm -f /home/pi/capture-stderr; nohup gdbserver :4567 /home/pi/projects/$bn/SETR_TP1 > /home/pi/capture-stdout 2> /home/pi/capture-stderr < /home/pi/entree_programme &"
+```
+
+De cette manière, Linux va faire "comme si" vous aviez tapé au clavier le texte écrit dans le fichier `/home/pi/entree_programme` (en tenant compte des retours à la ligne comme des "Enter").
+
+
 
 ### 6.4. Correction des bogues
 

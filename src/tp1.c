@@ -1,7 +1,7 @@
 //============================================================================
-// Name        : setr_tp1.cpp
+// Name        : tp1.c
 // Author      : Marc-Andre Gardner
-// Version     : Hiver 2017
+// Version     : Hiver 2022
 // Description : Fichier d'introduction a la compilation croisee et au 
 //               debogage distant
 //============================================================================
@@ -89,7 +89,10 @@ int main(int argc, char *argv[]) {
 	int numbers[N_ELEM];				// On alloue un tableau d'entiers (int)
 	char modeinit = INIT_INVERSE;		// Par defaut, l'initialisation est en ordre decroissant
 	if(argc > 1)
-		modeinit = (char)atoi(argv[1]); // Si l'utilisateur a indique un mode, on l'utilise
+		modeinit = (char)atoi(argv[1]); // Si l'utilisateur indique explicitement un mode, on l'utilise
+	
+	// On desactive le buffering pour les printf(), pour qu'il soit possible de les voir depuis votre ordinateur
+	setbuf(stdout, NULL);
 
 	printf("Initialisation du tableau de nombres (mode %i)...\n", modeinit);
 	initTableau(numbers, N_ELEM, modeinit);
@@ -100,7 +103,7 @@ int main(int argc, char *argv[]) {
 	qsort(numbers, 					// Notre tableau de nombres a trier
 			N_ELEM, 				// Le nombre d'elements dans le tableau
 			8, 						// Le nombre d'octets par element;
-									// 	le programme est compile sur un ordinateur 64 bits (celui sur lequel Eclipse est installe), donc un int fait 8 octets
+									// sur un ordinateur 64 bits comme le votre, un int fait 64 bits donc 8 octets
 			fonctionComparatrice);  // La fonction permettant d'ordonner deux elements
 
 	printf("Premier et dernier elements du tableau (post-tri, fonction de tri de la librairie standard) : %i / %i\n", numbers[0], numbers[N_ELEM-1]);
