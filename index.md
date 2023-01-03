@@ -52,7 +52,7 @@ sudo wpa_supplicant -c/etc/wpa_supplicant/wpa_supplicant.conf -iwlan0 -d
 Si il n'y a pas eu d'erreur, rebootez, sinon en cas d'erreur de syntaxe, le message sera assez explicite.
 Après redémarrage, vérifiez avec un `ifconfig` que vous êtes bien connecté, vous devriez notamment avoir une adresse IP (*inet* dans la section *wlan0*).
 
-> **Note** : Si vous désirez utiliser *Eduroam*, vous devrez adapter le contenu du fichier de configuration.  Un example se trouve dans le fichier `/etc/wpa_supplicant/wpa_supplicant.conf.eduroam`.
+> **Note** : Si vous désirez utiliser *Eduroam*, vous devrez adapter le contenu du fichier de configuration.  Un example se trouve dans le fichier `/etc/wpa_supplicant/wpa_supplicant.conf.eduroam`. Renommez ce fichier `/etc/wpa_supplicant/wpa_supplicant.conf` et modifiez les champs _identity_ (doit contenir VOTREIDUL@ulaval.ca) et _password_ (doit contenir votre NIP).
 
 <!---
 Vous devriez trouver la configuration suivante dans `/etc/wpa_supplicant/wpa_supplicant.conf`:
@@ -425,12 +425,16 @@ Si la compilation se termine avec succès, vous pouvez maintenant passer à l'é
 
 Une fois cela fait, vous pouvez synchroniser l'exécutable et lancer le débogage en allant dans le menu _Déboguer_ puis _Lancer le débogage_ (la touche F5 est un raccourci plus rapide ayant le même effet). Après quelques secondes (le script utilise rsync pour synchroniser les fichiers vers le Raspberry Pi), l'interface de débogage devrait s'afficher et vous permettre de déboguer le programme à distance.
 
-Lors du débogage, le programme s'exécute sur le Raspberry Pi et vous n'avez donc pas accès à STDIN ou STDOUT. Par défaut, STDOUT (c'est-à-dire la sortie standard du programme, celle qui est utilisée par exemple par `printf()`) est _redirigé_ vers le fichier `/home/pi/capture_stdout`. Vous pouvez donc voir, _après l'exécution_ de votre programme, le texte qu'il a produit en sortant en lisant ce fichier. Il est également possible de faire en sorte de le voir en temps réel dans VScode, en lançant, dans un second terminal, la commande suivante :
+#### 6.3.1. Entrée et sortie standard
+
+**Note**: cette sous-section est optionnelle, mais elle contient des informations qui peuvent vous aider pour l'exécution et le débogage de vos programmes, non seulement pour ce premier laboratoire, mais aussi pour les suivants.
+
+Lors du débogage, le programme s'exécute sur le Raspberry Pi et vous n'avez donc pas accès à STDIN ou STDOUT. Par défaut, STDOUT (c'est-à-dire la sortie standard du programme, celle qui est utilisée par exemple par `printf()` pour l'affichage) est _redirigé_ vers le fichier `/home/pi/capture_stdout`. Vous pouvez donc voir, _après l'exécution_ de votre programme, le texte qu'il a produit en sortant en lisant ce fichier. Il est également possible de faire en sorte de le voir en temps réel dans VScode, en lançant, dans un second terminal, la commande suivante :
 ```
 ssh pi@adresse_ip_ou_nom_dhote_de_votre_raspberry_pi tail -f -s 0.5 /home/pi/capture-stdout
 ```
 
-Cette commande va suivre les mises à jour du fichier `/home/pi/capture-stdout` à toutes les 0.5 seconde. Elle ne s'arrêtera toutefois pas automatiquement lorsque le débogage sera terminé, utilisez Ctrl-C pour le faire manuellement. La sortie _d'erreur_ standard (STDERR) est elle aussi capturée, mais dans le fichier `/home/pi/capture-stderr` cette fois.
+Cette commande va suivre les mises à jour du fichier `/home/pi/capture-stdout` à toutes les 0,5 seconde. Elle ne s'arrêtera toutefois pas automatiquement lorsque le débogage sera terminé, utilisez Ctrl-C pour le faire manuellement. La sortie _d'erreur_ standard (STDERR) est elle aussi capturée, mais dans le fichier `/home/pi/capture-stderr` cette fois.
 
 En ce qui concerne STDIN (les entrées _reçues_ par le programme, à partir du clavier), vous pouvez simuler ces entrées en les mettant dans un fichier (par exemple `/home/pi/entree_programme`) et en modifiant le fichier `src/syncAndStartGDB.sh` pour remplacer `/dev/null` à la toute fin de la ligne par votre fichier. Par exemple :
 ```
@@ -469,7 +473,7 @@ Modifiez maintenant l'argument d'entrée, afin d'obtenir une initialisation de l
 
 ## 7. Modalités d'évaluation
 
-Ce travail est **individuel**. Aucun rapport n'est à remettre, mais vous devez être en mesure de démontrer que votre environnement de développement est fonctionnel et que vous savez utiliser ses fonctions basiques dans une visioconférence Zoom. Cette évaluation sera faite lors des séances de laboratoire du **29 janvier 2022** et du **5 février 2022**. Ce travail compte pour **5%** de la note totale du cours.
+Ce travail est **individuel**. Aucun rapport n'est à remettre, mais vous devez être en mesure de démontrer que votre environnement de développement est fonctionnel et que vous savez utiliser ses fonctions basiques lors d'une évaluation en personne au PLT-0103. Cette évaluation sera faite lors des séances de laboratoire du **27 janvier 2023** et, si nécessaire, du **3 février 2023**. Ce travail compte pour **5%** de la note totale du cours.
 
 Le barême d'évaluation détaillé sera le suivant (laboratoire noté sur 20 pts):
 
