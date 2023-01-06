@@ -161,7 +161,9 @@ $ ./bootstrap
 ```
 -->
 
-**Note** : si vous observez un problème de ce type lors de l'exécution de `bootstrap`:
+#### 4.1.1. Problème de version d'Autoconf
+
+Si vous observez un problème de ce type lors de l'exécution de `bootstrap`:
 ```
 configure.ac:4: error: Autoconf version 2.71 or higher is required
 ```
@@ -171,6 +173,9 @@ git checkout tags/crosstool-ng-1.25.0
 ```
 
 Si vous n'avez _pas_ de problème (la commande `./bootstrap` termine avec succès), alors cette manoeuvre est inutile.
+
+
+#### 4.1.2. Configuration et compilation de Crosstool-NG
 
 Une fois la commande `./bootstrap` exécutée, en restant dans le même répertoire, utilisez `./configure` pour préparer la compilation et `make` pour le compiler :
 
@@ -291,7 +296,11 @@ $ ct-ng build
 
 Cette compilation peut prendre un bon moment (comptez au moins 30 minutes), dépendant de la puissance de votre ordinateur. Si vous utilisez une machine virtuelle, pensez à augmenter le nombre de processeurs alloués à celle-ci, puisque Crosstool-NG peut en tirer parti. Vous aurez également besoin d'une bonne connexion Internet.
 
-**Note** : si vous avez une erreur avec le téléchargement de zlib, vous pouvez contourner le problème en éditant le fichier `.config` et en modifiant la clé `CT_ZLIB_VERSION` à `1.2.11` (au lieu de `1.2.12`). Notez que ce changement doit être fait _après_ tout appel à `ct-ng menuconfig`. Notez finalement que cette modification n'est nécessaire _que si vous avez une erreur avec le téléchargement de zlib lors de l'appel à build_.
+#### 4.3.1. Erreur lors du téléchargement de zlib
+
+Si vous obtenez une erreur lors du téléchargement de zlib, vous pouvez contourner le problème en éditant le fichier `.config` et en modifiant la clé `CT_ZLIB_VERSION` à `1.2.11` (au lieu de `1.2.12`). Notez que ce changement doit être fait _après_ tout appel à `ct-ng menuconfig`. Notez finalement que cette modification n'est nécessaire _que si vous avez une erreur avec le téléchargement de zlib lors de l'appel à build_.
+
+#### 4.3.2. Validation du contenu de la chaîne de compilation
 
 Une fois cela fait, le répertoire `~/arm-cross-comp-env` devrait contenir un dossier nommé `arm-raspbian-linux-gnueabihf`. Dans ce dossier, vous retrouverez plusieurs choses, mais en particulier :
 
