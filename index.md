@@ -119,7 +119,7 @@ Changez les permissions permettant l'exécution du script avec la commande `sudo
 Ce cours requiert l'utilisation d'un système GNU/Linux. Dans le cadre du cours, vous avez deux options :
 
 <!--- * Utiliser un des ordinateurs du laboratoire informatique 0105, sur lesquels les logiciels et outils nécessaires au cours sont pré-installés; -->
-* Télécharger une machine virtuelle [VirtualBox](https://www.virtualbox.org/) à [l'adresse suivante](http://wcours.gel.ulaval.ca/GIF3004/setr-VM-h2022.zip) -- le nom d'utilisateur est `setr` et le mot de passe `gif3004`, vous n'avez pas accès à la commande `sudo`, mais pouvez passer en mode _root_ en utilisant `su`;
+* Télécharger une machine virtuelle [VirtualBox](https://www.virtualbox.org/) à [l'adresse suivante](http:/wcours.gel.ulaval.ca/GIF3004/setr-VM-h2023.zip) -- le nom d'utilisateur est `setr` et le mot de passe `gif3004`, vous n'avez pas accès à la commande `sudo`, mais pouvez passer en mode _root_ en utilisant `su`;
 * Utiliser votre propre installation Linux, notez que nous ne pouvons dans ce cas garantir que les étapes d'installation et de configuration seront exactement les mêmes (vous pouvez passer à la section suivante si vous choisissez cette option).
 
 Commencez par décompresser le fichier .zip téléchargé, il devrait contenir un unique fichier .div.
@@ -160,7 +160,19 @@ $ cd crosstool-ng
 $ ./bootstrap
 ```
 -->
-Dans ce même répertoire, utilisez `./configure` pour préparer la compilation et `make` pour le compiler :
+
+**Note** : si vous observez un problème de ce type lors de l'exécution de `bootstrap`:
+```
+configure.ac:4: error: Autoconf version 2.71 or higher is required
+```
+Vous pouvez régler le problème soit en mettant à jour votre distribution (la VM 2023 est à jour quant à elle) d'autoconf, soit en exécutant la commande suivante _avant_ de relancer `./bootstrap`:
+```
+git checkout tags/crosstool-ng-1.25.0
+```
+
+Si vous n'avez _pas_ de problème (la commande `./bootstrap` termine avec succès), alors cette manoeuvre est inutile.
+
+Une fois la commande `./bootstrap` exécutée, en restant dans le même répertoire, utilisez `./configure` pour préparer la compilation et `make` pour le compiler :
 
 ```
 $ ./configure --prefix=$HOME/crosstool-install
@@ -278,6 +290,8 @@ $ ct-ng build
 ```
 
 Cette compilation peut prendre un bon moment (comptez au moins 30 minutes), dépendant de la puissance de votre ordinateur. Si vous utilisez une machine virtuelle, pensez à augmenter le nombre de processeurs alloués à celle-ci, puisque Crosstool-NG peut en tirer parti. Vous aurez également besoin d'une bonne connexion Internet.
+
+**Note** : si vous avez une erreur avec le téléchargement de zlib, vous pouvez contourner le problème en éditant le fichier `.config` et en modifiant la clé `CT_ZLIB_VERSION` à `1.2.11` (au lieu de `1.2.12`). Notez que ce changement doit être fait _après_ tout appel à `ct-ng menuconfig`. Notez finalement que cette modification n'est nécessaire _que si vous avez une erreur avec le téléchargement de zlib lors de l'appel à build_.
 
 Une fois cela fait, le répertoire `~/arm-cross-comp-env` devrait contenir un dossier nommé `arm-raspbian-linux-gnueabihf`. Dans ce dossier, vous retrouverez plusieurs choses, mais en particulier :
 
