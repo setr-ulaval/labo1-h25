@@ -1,7 +1,7 @@
 //============================================================================
 // Name        : tp1.c
 // Author      : Marc-Andre Gardner
-// Version     : Hiver 2022
+// Version     : Hiver 2023
 // Description : Fichier d'introduction a la compilation croisee et au 
 //               debogage distant
 //============================================================================

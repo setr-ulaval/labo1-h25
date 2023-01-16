@@ -98,7 +98,7 @@ Nous recommandons finalement l'installation et l'utilisation d'un résolveur DNS
 
 Pour ce faire connectez-vous à [Duck DNS](https://www.duckdns.org). Créez un nom pour votre RPi.
 
-Cependant, cette information n'est pas adéquate dans le contexte qui nous intéresse, comme on veut utiliser les adresses locales pour se connecter au RPi directement. Pour ce faire, voici un [script shell](https://setr-ulaval.github.io/labo1-h22/etc/duckdns.sh) que vous pouvez copier dans `/usr/local/bin/duckdns.sh` sur votre RPi.
+Cependant, cette information n'est pas adéquate dans le contexte qui nous intéresse, comme on veut utiliser les adresses locales pour se connecter au RPi directement. Pour ce faire, voici un [script shell](https://setr-ulaval.github.io/labo1-h23/etc/duckdns.sh) que vous pouvez copier dans `/usr/local/bin/duckdns.sh` sur votre RPi.
 
 ```
 #!/bin/bash
@@ -118,7 +118,7 @@ Changez les permissions permettant l'exécution du script avec la commande `sudo
 
 Ce cours requiert l'utilisation d'un système GNU/Linux. Dans le cadre du cours, vous avez deux options :
 
-<!--- * Utiliser un des ordinateurs du laboratoire informatique 0105, sur lesquels les logiciels et outils nécessaires au cours sont pré-installés; -->
+* Utiliser un des ordinateurs du laboratoire informatique 0105, sur lesquels les logiciels et outils nécessaires au cours sont pré-installés;
 * Télécharger une machine virtuelle [VirtualBox](https://www.virtualbox.org/) à [l'adresse suivante](http:/wcours.gel.ulaval.ca/GIF3004/setr-VM-h2023.zip) -- le nom d'utilisateur est `setr` et le mot de passe `gif3004`, vous n'avez pas accès à la commande `sudo`, mais pouvez passer en mode _root_ en utilisant `su`;
 * Utiliser votre propre installation Linux, notez que nous ne pouvons dans ce cas garantir que les étapes d'installation et de configuration seront exactement les mêmes (vous pouvez passer à la section suivante si vous choisissez cette option).
 
@@ -126,7 +126,7 @@ Commencez par décompresser le fichier .zip téléchargé, il devrait contenir u
 Pour importer la machine virtuelle dans VirtualBox, cliquez sur *Nouvelle*. Vous pouvez choisir le nom de la machine virtuelle, pour *Type* sélectionnez *Linux* et *Fedora (64bit)* pour *Version*. Validez en appuyant sur *Suivant* et choisissez la mémoire que vous allez allouer à la machine virtuelle (vous pourrez toujours ajuster plus tard au besoin), *Suivant*. Sélectionner la dernière option *Utiliser un fichier de disque dur virtuel existant* et choisissez le fichier .vdi en cliquant qur l'icône en forme de dossier. *Créer* pour finaliser l'étape de création de la machine virtuelle.
 
 Vous pouvez ensuite la configurer avec *Clic-droit/Configuration...*.
-Sous *Système/Processeur*, choisissez le nombre de CPU à allouer.
+Sous *Système/Processeur*, choisissez le nombre de CPU à allouer. Si vous observez des plantages au démarrage de la VM, assurez-vous que le nombre de CPU est > 1.
 Sous *Affichage/Écran*, Ajustez la mémoire vidéo et *Activer l'accélération 3D*.
 La configuration de base est normalement terminée, vous pouvez valider et lancer la VM.
 
@@ -153,13 +153,6 @@ $ git clone https://github.com/crosstool-ng/crosstool-ng.git
 $ cd crosstool-ng
 $ ./bootstrap
 ```
-<!--- 
-```
-$ git clone https://github.com/setr-ulaval/crosstool-ng.git
-$ cd crosstool-ng
-$ ./bootstrap
-```
--->
 
 #### 4.1.1. Problème de version d'Autoconf
 
@@ -208,7 +201,7 @@ $ cd ct-config-rpi-zero
 Au lieu de partir d'une configuration vide, nous allons utiliser le fichier de configuration fourni par le distributeur des Raspberry Pi. Dans le dossier `ct-config-rpi-zero`, téléchargez le fichier suivant et nommez le `.config` :
 
 ```
-$ wget -O .config https://setr-ulaval.github.io/labo1-h22/etc/ct-ng-config
+$ wget -O .config https://setr-ulaval.github.io/labo1-h23/etc/ct-ng-config
 ```
 
 Par la suite, lancez l'utilitaire de configuration de Crosstool-NG :
@@ -302,10 +295,12 @@ Si vous obtenez une erreur lors du téléchargement de zlib, vous pouvez contour
 
 #### 4.3.2. Validation du contenu de la chaîne de compilation
 
-Une fois cela fait, le répertoire `~/arm-cross-comp-env` devrait contenir un dossier nommé `arm-raspbian-linux-gnueabihf`. Dans ce dossier, vous retrouverez plusieurs choses, mais en particulier :
+Une fois cela fait, le répertoire `~/arm-cross-comp-env` devrait contenir un dossier nommé `arm-raspbian-linux-gnueabi`. Dans ce dossier, vous retrouverez plusieurs choses, mais en particulier :
 
-* `bin/`, qui contient des exécutables x86-64 capables de générer du code machine ARM. Assurez-vous que ce dossier soit dans votre chemin d'exécution (PATH). Lorsque nous voudrons compiler un programme vers un binaire ARM, nous n'utiliserons donc pas `gcc` (qui compilerait en x86-64), mais bien `arm-raspbian-linux-gnueabihf-gcc`
-* `arm-raspbian-linux-gnueabihf/sysroot`, qui contient les librairies et en-têtes des librairies centrales au système (libc, binutils, etc.). C'est là que le compilateur et l'éditeur de liens iront chercher les informations dont ils ont besoin.
+* `bin/`, qui contient des exécutables x86-64 capables de générer du code machine ARM. Assurez-vous que ce dossier soit dans votre chemin d'exécution (PATH). Lorsque nous voudrons compiler un programme vers un binaire ARM, nous n'utiliserons donc pas `gcc` (qui compilerait en x86-64), mais bien `arm-raspbian-linux-gnueabi-gcc`
+* `arm-raspbian-linux-gnueabi/sysroot`, qui contient les librairies et en-têtes des librairies centrales au système (libc, binutils, etc.). C'est là que le compilateur et l'éditeur de liens iront chercher les informations dont ils ont besoin.
+
+> Note : si votre répertoire `~/arm-cross-comp-env` contient plutôt un dossier nommé `arm-raspbian-linux-gnueabihf` (avec "hf" à la fin), ajoutez ce suffixe à tous les endroits où on mentionne "arm-raspbian-linux-gnueabi" à partir d'ici.
 
 ### 4.4. Synchronisation avec le Raspberry Pi
 
@@ -320,7 +315,7 @@ Une fois cela fait, le répertoire `~/arm-cross-comp-env` devrait contenir un do
 Pour synchroniser ces dossiers, nous allons utiliser `rsync`. Cet outil permet de faire des mises à jour _incrémentales_, c'est-à-dire que seules les différences sont transférées.
 
 ```
-$ cd ~/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf
+$ cd ~/arm-cross-comp-env/arm-raspbian-linux-gnueabi/arm-raspbian-linux-gnueabi
 $ rsync -av --numeric-ids --exclude "*.ko" --exclude "*.fw" --exclude "/opt/vc/src" --delete pi@adresse_ip_ou_nom_dhote:{/lib,/opt} sysroot
 $ rsync -av --numeric-ids --exclude "/usr/lib/.debug" --delete pi@adresse_ip_ou_nom_dhote:{/usr/lib,/usr/include} sysroot/usr
 ```
@@ -335,7 +330,7 @@ lrwxrwxrwx 1 setr setr 35 15 jun  2017 sysroot/usr/lib/arm-linux-gnueabihf/libdl
 Comme on le voit, le lien pointe vers un chemin absolu, qui n'existe pas sur notre plateforme de compilation. Il y a plusieurs solutions pour corriger ce problème, vous pouvez consulter [cette page](https://unix.stackexchange.com/questions/100918/convert-absolute-symlink-to-relative-symlink-with-simple-linux-command) pour en savoir plus, mais le plus simple est d'utiliser la commande suivante. Attention, le `find` doit être exécuté *dans* le répertoire _sysroot_, sinon les chemins ne seront pas convertis correctement!
 
 ```
-$ cd ~/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot
+$ cd ~/arm-cross-comp-env/arm-raspbian-linux-gnueabi/arm-raspbian-linux-gnueabi/sysroot
 $ find . -lname '/*' | while read l ; do   echo ln -sf $(echo $(echo $l | sed 's|/[^/]*|/..|g')$(readlink $l) | sed 's/.....//') $l; done | sh
 ```
 
@@ -357,12 +352,12 @@ SET(CMAKE_SYSTEM_VERSION 4.19)
 set(CMAKE_SYSTEM_PROCESSOR arm)
 
 # Localisation du sysroot
-set(CMAKE_SYSROOT $ENV{HOME}/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot)
+set(CMAKE_SYSROOT $ENV{HOME}/arm-cross-comp-env/arm-raspbian-linux-gnueabi/arm-raspbian-linux-gnueabi/sysroot)
 
 # Selection du compilateur
-set(tools $ENV{HOME}/arm-cross-comp-env/arm-raspbian-linux-gnueabihf)
-set(CMAKE_C_COMPILER ${tools}/bin/arm-raspbian-linux-gnueabihf-gcc)
-set(CMAKE_CXX_COMPILER ${tools}/bin/arm-raspbian-linux-gnueabihf-g++)
+set(tools $ENV{HOME}/arm-cross-comp-env/arm-raspbian-linux-gnueabi)
+set(CMAKE_C_COMPILER ${tools}/bin/arm-raspbian-linux-gnueabi-gcc)
+set(CMAKE_CXX_COMPILER ${tools}/bin/arm-raspbian-linux-gnueabi-g++)
 
 # On ajoute des options au compilateur pour lui indiquer ou aller chercher les librairies
 SET(FLAGS "-Wl,-rpath-link,${CMAKE_SYSROOT}/opt/vc/lib -Wl,-rpath-link,${CMAKE_SYSROOT}/lib/arm-linux-gnueabihf -Wl,-rpath-link,${CMAKE_SYSROOT}/usr/lib/arm-linux-gnueabihf -Wl,-rpath-link,${CMAKE_SYSROOT}/usr/local/lib")
@@ -404,7 +399,7 @@ Nous allons maintenant configurer un nouveau projet pour ce laboratoire.
 Sur VSC, les projets sont simplement des dossiers. Créez donc dans votre dossier personnel un nouveau dossier nommé _projets_ puis, dans celui-ci, clonez le dépôt Git suivant :
 
 ```
-$ git clone https://github.com/setr-ulaval/labo1-h22.git
+$ git clone https://github.com/setr-ulaval/labo1-h23.git
 ```
 
 Rendez également le script `src/syncAndStartGDB.sh` exécutable :
@@ -413,7 +408,9 @@ Rendez également le script `src/syncAndStartGDB.sh` exécutable :
 $ chmod +x src/syncAndStartGDB.sh
 ```
 
-Par la suite, dans VSC, allez dans `Fichier > Ouvrir un dossier` et sélectionnez _labo1-h22/src_. Vous devriez alors pouvoir accéder, via le menu de gauche, aux fichiers `tp1.c` et `CMakeLists.txt`.
+Par la suite, dans VSC, allez dans `Fichier > Ouvrir un dossier` et sélectionnez _labo1-h23/src_. Vous devriez alors pouvoir accéder, via le menu de gauche, aux fichiers `tp1.c` et `CMakeLists.txt`.
+
+> **Important** : ouvrez bien le dossier _src_ et non la racine (labo1-h23), sinon les scripts de configuration ne fonctionneront pas!
 
 À l'ouverture d'un nouveau projet, quelques notifications `CMake` apparaitront.  Assurez-vous de répondre *Oui* / *Autoriser*
 
@@ -452,7 +449,7 @@ Une fois cela fait, vous pouvez synchroniser l'exécutable et lancer le débogag
 
 **Note**: cette sous-section est optionnelle, mais elle contient des informations qui peuvent vous aider pour l'exécution et le débogage de vos programmes, non seulement pour ce premier laboratoire, mais aussi pour les suivants.
 
-Lors du débogage, le programme s'exécute sur le Raspberry Pi et vous n'avez donc pas accès à STDIN ou STDOUT. Par défaut, STDOUT (c'est-à-dire la sortie standard du programme, celle qui est utilisée par exemple par `printf()` pour l'affichage) est _redirigé_ vers le fichier `/home/pi/capture_stdout`. Vous pouvez donc voir, _après l'exécution_ de votre programme, le texte qu'il a produit en lisant ce fichier. Il est également possible de faire en sorte de le voir en temps réel dans VScode, en lançant, dans un second terminal, la commande suivante :
+Lors du débogage, le programme s'exécute sur le Raspberry Pi et vous n'avez donc pas accès à STDIN ou STDOUT. Par défaut, STDOUT (c'est-à-dire la sortie standard du programme, celle qui est utilisée par exemple par `printf()` pour l'affichage) est _redirigé_ vers le fichier `/home/pi/capture_stdout`. Vous pouvez donc voir, _après l'exécution_ de votre programme, le texte qu'il a produit en lisant ce fichier. Il est également possible de faire en sorte de le voir en temps réel dans VScode, en lançant, dans un second terminal (utilisez l'icône "+", en bas à droite), la commande suivante :
 ```
 ssh pi@adresse_ip_ou_nom_dhote_de_votre_raspberry_pi tail -f -s 0.5 /home/pi/capture-stdout
 ```
@@ -475,7 +472,7 @@ Finalement, une fois le développement du programme et de la chaîne de compilat
 
 ### 6.4. Correction des bogues
 
-À ce stade, vous devriez être en mesure de lancer une session de débogage à distance sur le Raspberry Pi. Il est maintenant temps d'utiliser tout cela à bon escient! Le fichier qui vous est fourni **contient trois erreurs distinctes** en plus de générer plusieurs avertissements de la part du compilateur. Ces erreurs ne sont pas des erreurs de compilation, mais des erreurs de logique, qui empêchent le programme d'avoir le bon comportement. Vous devez les identifier et les corriger en utilisant le débogueur de VSC. Vous devez également pouvoir expliquer leur cause, de même que les corrections à apporter pour que le programme fonctionne correctement. 
+À ce stade, vous devriez être en mesure de lancer une session de débogage à distance sur le Raspberry Pi. Il est maintenant temps d'utiliser tout cela à bon escient! Le fichier qui vous est fourni **contient trois erreurs distinctes** en plus de générer plusieurs avertissements de la part du compilateur. Ces erreurs ne sont pas des erreurs de compilation, mais des erreurs de logique, qui empêchent le programme d'avoir le bon comportement -- et qui, comme vous le constaterez, le font planter. Vous devez les identifier et les corriger en utilisant le débogueur de VSC. Vous devez également pouvoir expliquer leur cause, de même que les corrections à apporter pour que le programme fonctionne correctement. 
 
 Finalement, vous devez corriger le code de manière à ce que GCC ne renvoie plus *aucun* warning lors de la compilation (tout en conservant le fonctionnement du programme, bien entendu). Prenez l'habitude de lire et décortiquer les avertissements du compilateur; ceux-ci révèlent parfois des erreurs cachées (et c'est le cas ici...).
 
