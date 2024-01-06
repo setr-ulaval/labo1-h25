@@ -15,7 +15,7 @@ Ce travail pratique vise les objectifs suivants :
 
 ## 2. Préparation du Raspberry Pi
 
-La carte MicroSD du kit qui vous a été fourni contient normalement déjà l'image système nécessaire au cours. Toutefois, dans le cas où vous recevez un kit avec une MicroSD non-initialisée, que vous voudriez revenir à l'état initial de l'image, ou simplement créer une copie, vous pouvez télécharger le fichier *.img* contenant l'[image du cours](http://wcours.gel.ulaval.ca/GIF3004/setr_h2022.v1.img.zip). Ce fichier doit être copié en mode bas niveau sur la carte MicroSD (par exemple en utilisant `dd` sous Linux, ou un programme tel que [Rufus](https://rufus.ie/en/) sur Windows).
+La carte MicroSD du kit qui vous a été fourni contient normalement déjà l'image système nécessaire au cours. Toutefois, dans le cas où vous recevez un kit avec une MicroSD non-initialisée, que vous voudriez revenir à l'état initial de l'image, ou simplement créer une copie, vous pouvez télécharger le fichier *.img* contenant l'[image du cours](http://wcours.gel.ulaval.ca/GIF3004/setrh24/imgh24-v2.zip). Ce fichier doit être copié en mode bas niveau sur la carte MicroSD (par exemple en utilisant `dd` sous Linux, ou un programme tel que [Rufus](https://rufus.ie/en/) sur Windows).
 
 La première des tâches à réaliser est de démarrer le Raspberry Pi Zero W, de mettre en place sa configuration initiale et de vous assurer de son bon fonctionnement. Par la suite, vous devrez installer sur votre ordinateur l'environnement de développement et de compilation croisée qui vous servira tout au long de la session. 
 
@@ -28,7 +28,7 @@ Insérez la carte MicroSD avec l'image du cours dans la fente prévue à cet eff
 * **Nom d'utilisateur** : _pi_
 * **Mot de passe** : _gif3004_
 
-Si tout s'est bien passé, vous devriez vous retrouver face à un écran vous demandant de changer votre mot de passe. Le mot de passe par défaut de l'image est "gif3004", nous vous recommandons fortement de le remplacer par un mot de passe plus sécuritaire (et personnel).
+Si tout s'est bien passé, vous devriez vous retrouver face à un écran vous demandant de changer votre mot de passe. Le mot de passe par défaut de l'image est "gif3004", nous vous recommandons fortement de le remplacer par un mot de passe plus sécuritaire (et personnel). Pour changer votre mot de passe manuellement, utilisez la commande `passwd` dans le terminal.
 
 ### 2.2. Réseau sans fil
 
@@ -98,7 +98,7 @@ Nous recommandons finalement l'installation et l'utilisation d'un résolveur DNS
 
 Pour ce faire connectez-vous à [Duck DNS](https://www.duckdns.org). Créez un nom pour votre RPi.
 
-Cependant, cette information n'est pas adéquate dans le contexte qui nous intéresse, comme on veut utiliser les adresses locales pour se connecter au RPi directement. Pour ce faire, voici un [script shell](https://setr-ulaval.github.io/labo1-h23/etc/duckdns.sh) que vous pouvez copier dans `/usr/local/bin/duckdns.sh` sur votre RPi.
+Cependant, cette information n'est pas adéquate dans le contexte qui nous intéresse, comme on veut utiliser les adresses locales pour se connecter au RPi directement. Pour ce faire, voici un [script shell](https://setr-ulaval.github.io/labo1-h24/etc/duckdns.sh) que vous pouvez copier dans `/usr/local/bin/duckdns.sh` sur votre RPi.
 
 ```
 #!/bin/bash
@@ -119,16 +119,18 @@ Changez les permissions permettant l'exécution du script avec la commande `sudo
 Ce cours requiert l'utilisation d'un système GNU/Linux. Dans le cadre du cours, vous avez deux options :
 
 * Utiliser un des ordinateurs du laboratoire informatique 0105, sur lesquels les logiciels et outils nécessaires au cours sont pré-installés;
-* Télécharger une machine virtuelle [VirtualBox](https://www.virtualbox.org/) à [l'adresse suivante](http:/wcours.gel.ulaval.ca/GIF3004/setr-VM-h2023.zip) -- le nom d'utilisateur est `setr` et le mot de passe `gif3004`, vous n'avez pas accès à la commande `sudo`, mais pouvez passer en mode _root_ en utilisant `su`;
+* Télécharger une machine virtuelle [VirtualBox](https://www.virtualbox.org/) à [l'adresse suivante](http://wcours.gel.ulaval.ca/GIF3004/setrh24/setrh2024.zip) -- le nom d'utilisateur est `setr` et le mot de passe `setrh2024`, vous n'avez pas accès à la commande `sudo`, mais pouvez passer en mode _root_ en utilisant `su`;
 * Utiliser votre propre installation Linux, notez que nous ne pouvons dans ce cas garantir que les étapes d'installation et de configuration seront exactement les mêmes (vous pouvez passer à la section suivante si vous choisissez cette option).
 
-Commencez par décompresser le fichier .zip téléchargé, il devrait contenir un unique fichier .div.
+Commencez par décompresser le fichier .zip téléchargé, il devrait contenir un unique fichier .vdi.
 Pour importer la machine virtuelle dans VirtualBox, cliquez sur *Nouvelle*. Vous pouvez choisir le nom de la machine virtuelle, pour *Type* sélectionnez *Linux* et *Fedora (64bit)* pour *Version*. Validez en appuyant sur *Suivant* et choisissez la mémoire que vous allez allouer à la machine virtuelle (vous pourrez toujours ajuster plus tard au besoin), *Suivant*. Sélectionner la dernière option *Utiliser un fichier de disque dur virtuel existant* et choisissez le fichier .vdi en cliquant qur l'icône en forme de dossier. *Créer* pour finaliser l'étape de création de la machine virtuelle.
 
 Vous pouvez ensuite la configurer avec *Clic-droit/Configuration...*.
-Sous *Système/Processeur*, choisissez le nombre de CPU à allouer. Si vous observez des plantages au démarrage de la VM, assurez-vous que le nombre de CPU est > 1.
-Sous *Affichage/Écran*, Ajustez la mémoire vidéo et *Activer l'accélération 3D*.
+Sous *Système/Processeur*, choisissez le nombre de CPU à allouer. Si vous observez des plantages au démarrage de la VM, assurez-vous que le nombre de CPU est > 1. Assurez-vous également d'allouer au minimum 4096 MB de RAM.
+Sous *Affichage/Écran*, Ajustez la mémoire vidéo à *128 MB* et *Activer l'accélération 3D*. Si vous observez des plantages ou que l'écran se fige, désactivez au contraire l'accélération 3D. Les transitions seront moins fluides mais la VM fonctionnera sans plantage.
 La configuration de base est normalement terminée, vous pouvez valider et lancer la VM.
+
+> **Important**: la machine virtuelle Fedora est sensible aux fermetures inopinées. Assurez-vous de toujours fermer correctement la VM (en utilisant bouton d'arrêt en haut à droite de l'écran de la VM) pour éviter tout problème de corruption de données.
 
 
 ## 4. Installation de l'environnement de compilation croisée
@@ -149,26 +151,14 @@ Notez que la compilation de cet environnement peut prendre un certain temps. Cet
 Pour installer Crosstool-NG, récupérez d'abord la version utilisée dans le cours, puis exécutez le script `bootstrap` :
 
 ```
-$ git clone https://github.com/crosstool-ng/crosstool-ng.git
-$ cd crosstool-ng
+$ cd $HOME
+$ wget http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.26.0.tar.bz2
+$ tar -xvf crosstool-ng-1.26.0.tar.bz2
+$ cd crosstool-ng-1.26.0
 $ ./bootstrap
 ```
 
-#### 4.1.1. Problème de version d'Autoconf
-
-Si vous observez un problème de ce type lors de l'exécution de `bootstrap`:
-```
-configure.ac:4: error: Autoconf version 2.71 or higher is required
-```
-Vous pouvez régler le problème soit en mettant à jour votre distribution (la VM 2023 est à jour quant à elle) d'autoconf, soit en exécutant la commande suivante _avant_ de relancer `./bootstrap`:
-```
-git checkout tags/crosstool-ng-1.25.0
-```
-
-Si vous n'avez _pas_ de problème (la commande `./bootstrap` termine avec succès), alors cette manoeuvre est inutile.
-
-
-#### 4.1.2. Configuration et compilation de Crosstool-NG
+#### 4.1.1. Configuration et compilation de Crosstool-NG
 
 Une fois la commande `./bootstrap` exécutée, en restant dans le même répertoire, utilisez `./configure` pour préparer la compilation et `make` pour le compiler :
 
@@ -194,6 +184,7 @@ export PATH=$PATH:$HOME/crosstool-install/bin
 Nous allons maintenant préparer la compilation de l'environnement de compilation croisée (oui, c'est méta). Pour ce faire, Crosstool-NG a besoin d'informations sur notre système _cible_ (le Raspberry Pi). Créez tout d'abord un dossier nommé `ct-config-rpi-zero` dans votre dossier personnel et allez à l'intérieur :
 
 ```
+$ cd $HOME
 $ mkdir ct-config-rpi-zero
 $ cd ct-config-rpi-zero
 ```
@@ -201,7 +192,7 @@ $ cd ct-config-rpi-zero
 Au lieu de partir d'une configuration vide, nous allons utiliser le fichier de configuration fourni par le distributeur des Raspberry Pi. Dans le dossier `ct-config-rpi-zero`, téléchargez le fichier suivant et nommez le `.config` :
 
 ```
-$ wget -O .config https://setr-ulaval.github.io/labo1-h23/etc/ct-ng-config
+$ wget -O .config https://setr-ulaval.github.io/labo1-h24/etc/ct-ng-config
 ```
 
 Par la suite, lancez l'utilitaire de configuration de Crosstool-NG :
@@ -214,7 +205,7 @@ Vous devriez alors obtenir une interface de ce type :
 
 <img src="img/ct_im1.png" style="width:510px"/>
 
-> **Important** : suivez _scrupuleusement_ les instructions suivantes. Tout manquement risque d'entraîner des erreurs ultérieures difficiles à interpréter et à corriger.
+> **Important** : suivez _scrupuleusement_ les instructions suivantes. Tout manquement risque d'entraîner des erreurs ultérieures difficiles à interpréter et à corriger. Certains de ces changements peuvent avoir déjà été faits dépendant de la configuration de votre environnement. Si c'est le cas, laissez-les tels quel.
 
 Allez dans la section _Paths and misc options_ et remplacez :
 
@@ -250,14 +241,15 @@ Dans la section _Target options_, nous allons spécifier au compilateur les cara
 
 Dans la section _Operating System_, remplacez :
 
+* _Version of Linux_ : `6.1.35`
 * _Source of linux_ : `Custom location`
 * Une fois l'étape précédente effectuée, _Custom location_ : `chemin vers les sources du kernel`
 
 Dans la dernière étape, `chemin vers les sources du kernel` doit être le chemin absolu vers le dossier contenant les sources du noyau Linux utilisé sur le Raspberry Pi. Celui-ci peut-être situé à des endroits différents selon votre installation:
 
-* Si vous travaillez *sur les ordinateurs du laboratoire 0103/0105*, le chemin est `/opt/linux-rpi-4.19.y-rt` 
-* Si vous travaillez *sur la machine virtuelle Fedora fournie*, le chemin est `/home/setr/rPi/linux-rpi-4.19.y-rt`
-* Si vous travaillez *sur votre propre ordinateur*, téléchargez [l'archive suivante](http://wcours.gel.ulaval.ca/GIF3004/linux.tar), décompressez-la et indiquez son chemin absolu.
+* Si vous travaillez *sur les ordinateurs du laboratoire 0103/0105*, le chemin est `/opt/linux-rpi-6.1.54-rt15` 
+* Si vous travaillez *sur la machine virtuelle Fedora fournie*, le chemin est `/home/setr/rPi/linux-rpi-6.1.54-rt15`
+* Si vous travaillez *sur votre propre ordinateur*, téléchargez [l'archive suivante](http://wcours.gel.ulaval.ca/GIF3004/setrh24/linux-rpi-6.1.54-rt15.patched.tar.gz), décompressez-la et indiquez son chemin absolu.
 
 <!--- Dans la section _C-library_, remplacez :
 
@@ -289,11 +281,8 @@ $ ct-ng build
 
 Cette compilation peut prendre un bon moment (comptez au moins 30 minutes), dépendant de la puissance de votre ordinateur. Si vous utilisez une machine virtuelle, pensez à augmenter le nombre de processeurs alloués à celle-ci, puisque Crosstool-NG peut en tirer parti. Vous aurez également besoin d'une bonne connexion Internet.
 
-#### 4.3.1. Erreur lors du téléchargement de zlib
 
-Si vous obtenez une erreur lors du téléchargement de zlib, vous pouvez contourner le problème en éditant le fichier `.config` et en modifiant la clé `CT_ZLIB_VERSION` à `1.2.11` (au lieu de `1.2.12`). Notez que ce changement doit être fait _après_ tout appel à `ct-ng menuconfig`. Notez finalement que cette modification n'est nécessaire _que si vous avez une erreur avec le téléchargement de zlib lors de l'appel à build_.
-
-#### 4.3.2. Validation du contenu de la chaîne de compilation
+#### 4.3.1. Validation du contenu de la chaîne de compilation
 
 Une fois cela fait, le répertoire `~/arm-cross-comp-env` devrait contenir un dossier nommé `arm-raspbian-linux-gnueabi`. Dans ce dossier, vous retrouverez plusieurs choses, mais en particulier :
 
@@ -348,7 +337,7 @@ Dans le cadre du cours, nous allons utiliser [Visual Studio Code](https://packag
 ```
 # Identification du systeme cible
 SET(CMAKE_SYSTEM_NAME Linux)
-SET(CMAKE_SYSTEM_VERSION 4.19)
+SET(CMAKE_SYSTEM_VERSION 6.1)
 set(CMAKE_SYSTEM_PROCESSOR arm)
 
 # Localisation du sysroot
@@ -376,7 +365,7 @@ Nous réutiliserons cette configuration générique pour tous les projets du cou
 
 ### 5.2. Installer les extensions requises par VSC
 
-Une fois VSC ouvert, sélectionnez l'interface de recherche des extensions en cliquant sur la cinquième icône dans la barre de gauche. Par la suite, recherchez l'extension "C/C++" et installez le premier résultat.
+Une fois VSC ouvert, sélectionnez l'interface de recherche des extensions en cliquant sur la cinquième icône dans la barre de gauche. Par la suite, recherchez l'extension "C/C++ Extension Pack" et installez le premier résultat. Faites de même pour l'extension "Native Debug":
 
 <img src="img/vsc_1.png" style="width:410px"/> 
 <img src="img/vsc_2.png" style="width:410px"/>
@@ -385,7 +374,7 @@ Afin d'être utilisée, l'extension doit maintenant _recharger_ l'interface de V
 
 <img src="img/vsc_3.png" style="width:410px"/>
 
-> **Vous devez installer les extensions suivantes :** `C/C++`, `CMake`, `CMake Tools` et `Native Debug`.
+> **Vous devez installer les extensions suivantes :** `C/C++ Extension Pack` et `Native Debug`.
 
 > Si vous utilisez l'image VirtualBox fournie, ces extensions devraient déjà être installées.
 
@@ -399,7 +388,7 @@ Nous allons maintenant configurer un nouveau projet pour ce laboratoire.
 Sur VSC, les projets sont simplement des dossiers. Créez donc dans votre dossier personnel un nouveau dossier nommé _projets_ puis, dans celui-ci, clonez le dépôt Git suivant :
 
 ```
-$ git clone https://github.com/setr-ulaval/labo1-h23.git
+$ git clone https://github.com/setr-ulaval/labo1-h24.git
 ```
 
 Rendez également le script `src/syncAndStartGDB.sh` exécutable :
@@ -408,9 +397,9 @@ Rendez également le script `src/syncAndStartGDB.sh` exécutable :
 $ chmod +x src/syncAndStartGDB.sh
 ```
 
-Par la suite, dans VSC, allez dans `Fichier > Ouvrir un dossier` et sélectionnez _labo1-h23/src_. Vous devriez alors pouvoir accéder, via le menu de gauche, aux fichiers `tp1.c` et `CMakeLists.txt`.
+Par la suite, dans VSC, allez dans `Fichier > Ouvrir un dossier` et sélectionnez _labo1-h24/src_. Vous devriez alors pouvoir accéder, via le menu de gauche, aux fichiers `tp1.c` et `CMakeLists.txt`.
 
-> **Important** : ouvrez bien le dossier _src_ et non la racine (labo1-h23), sinon les scripts de configuration ne fonctionneront pas!
+> **Important** : ouvrez bien le dossier _src_ et non la racine (labo1-h24), sinon les scripts de configuration ne fonctionneront pas!
 
 À l'ouverture d'un nouveau projet, quelques notifications `CMake` apparaitront.  Assurez-vous de répondre *Oui* / *Autoriser*
 
