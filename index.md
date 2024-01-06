@@ -30,54 +30,21 @@ Insérez la carte MicroSD avec l'image du cours dans la fente prévue à cet eff
 
 Si tout s'est bien passé, vous devriez vous retrouver face à un écran vous demandant de changer votre mot de passe. Le mot de passe par défaut de l'image est "gif3004", nous vous recommandons fortement de le remplacer par un mot de passe plus sécuritaire (et personnel). Pour changer votre mot de passe manuellement, utilisez la commande `passwd` dans le terminal.
 
+> **Important** : modifiez le mot de passe avant de vous connecter sur un réseau, sinon tout le monde pourra accéder à votre Raspberry Pi et son contenu!
+
 ### 2.2. Réseau sans fil
 
-Ensuite, vous devez faire la configuration pour que votre Raspberry Pi se connecte à votre réseau sans fil.
-Créer ou modifiez le fichier de configuration avec la commande `sudo nano /etc/wpa_supplicant/wpa_supplicant.conf`, son contenu doit ressembler à ceci:
-```
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-country=CA
+Ensuite, vous devez configurer votre Raspberry Pi pour qu'il se connecte au réseau sans fil.
 
-network={
-        ssid="nom_du_reseau"
-        psk="mot_de_passe"
-}
-```
-Si ce n'est pas le cas ou que le fichier n'existe pas, recopiez et sauvegardez avec *Ctrl+X*. Vous pouvez alors exécuter 
-```
-sudo killall wpa_supplicant
-sudo wpa_supplicant -c/etc/wpa_supplicant/wpa_supplicant.conf -iwlan0 -d
-```
-Si il n'y a pas eu d'erreur, rebootez, sinon en cas d'erreur de syntaxe, le message sera assez explicite.
-Après redémarrage, vérifiez avec un `ifconfig` que vous êtes bien connecté, vous devriez notamment avoir une adresse IP (*inet* dans la section *wlan0*).
+#### 2.2.1. Eduroam
 
-> **Note** : Si vous désirez utiliser *Eduroam*, vous devrez adapter le contenu du fichier de configuration.  Un example se trouve dans le fichier `/etc/wpa_supplicant/wpa_supplicant.conf.eduroam`. Renommez ce fichier `/etc/wpa_supplicant/wpa_supplicant.conf` et modifiez les champs _identity_ (doit contenir VOTREIDUL@ulaval.ca) et _password_ (doit contenir votre NIP).
+Si vous êtes sur le campus, nous vous suggérons d'utiliser Eduroam. Nous vous fournissons déjà un fichier de configuration pour ce réseau dans `/etc/NetworkManager/system-connections/eduroam.nmconnection`. Éditez ce fichier pour y ajouter votre IDUL et votre NIP, puis redémarrez le Raspberry Pi avec la commande `sudo reboot`. 
 
-<!---
-Vous devriez trouver la configuration suivante dans `/etc/wpa_supplicant/wpa_supplicant.conf`:
+> Note : si vous n'êtes pas familier avec les éditeurs de texte en console, nous vous suggérons d'utiliser `nano` (par exemple, dans ce cas-ci, `sudo nano /etc/NetworkManager/system-connections/eduroam.nmconnection`). Une fois vos modifications effectuées, utilisez Ctrl+X pour quitter, puis Y (pour enregistrer vos modifications) et Enter (pour conserver le même nom de fichier). Si vous êtes familiers avec d'autres éditeurs, vous êtes évidemment libre de les utiliser.
 
-```
-country=CA
-ctrl_interface=/var/run/wpa_supplicant GROUP=netdev
-network={
-    ssid="eduroam"
-    auth_alg=OPEN
-    key_mgmt=WPA-EAP
-    proto=WPA2
-    eap=PEAP
-    phase1="peaplabel=0"
-    phase2="auth=MSCHAPV2"
-    identity="IDUL@ulaval.ca"
-    password="MOTDEPASSE"
-}
-```
+#### 2.2.2 Votre propre réseau
 
-Si elle est absente, veuillez l'ajouter. Lors du premier démarrage, éditez les éléments suivants du fichier pour connectez le Raspberry Pi au réseau *eduroam*:
-
-* Dans le champ _identity_, écrivez votre IDUL@ulaval.ca
-* Dans le champ _password_, écrivez votre NIP
--->
+Utilisez la commande `nmtui` dans le terminal et suivez les instructions. En général, il suffit de sélectionner `Add connection` ou `Edit connection` (dépendant des réseaux déjà enregistrés), puis de sélectionner le réseau sur lequel vous voulez vous connecter. Une fois la configuration terminée, la connexion devrait se faire dans les 15-20 secondes.
 
 ### 2.3. Accès par SSH
 
@@ -92,9 +59,11 @@ $ ssh-keygen -t rsa -b 4096 -C "ecrivez_votre_nom_ici"
 $ ssh-copy-id pi@adresse_ip_de_votre_raspberry_pi
 ```
 
+> Si tout fonctionne à ce stade, vous ne devriez plus avoir à brancher un clavier sur votre Raspberry Pi, puisque vous pourrez l'administrer à distance avec SSH, qui vous offre le même terminal que celui natif du Raspberry Pi.
+
 ### 2.4. Configuration d'un résolveur DNS (optionnel)
 
-Nous recommandons finalement l'installation et l'utilisation d'un résolveur DNS tel que [DuckDNS](http://duckdns.org) (gratuit), qui vous permettra de vous connecter plus facilement à votre Raspberry Pi en vous permettant d'utiliser un nom de domaine tel que "tarteauxframboises.duckdns.org" plutôt qu'une adresse IP pouvant potentiellement varier au fil de la session.
+Nous recommandons finalement l'installation et l'utilisation d'un résolveur DNS tel que [DuckDNS](http://duckdns.org) (gratuit), qui vous permettra de vous connecter plus facilement à votre Raspberry Pi en vous permettant d'utiliser un nom de domaine tel que "tarteauxframboises.duckdns.org" plutôt qu'une adresse IP pouvant potentiellement varier au fil de la session -- et qui vous forcera à brancher un écran pour l'obtenir.
 
 Pour ce faire connectez-vous à [Duck DNS](https://www.duckdns.org). Créez un nom pour votre RPi.
 
@@ -111,7 +80,7 @@ echo url="https://www.duckdns.org/update?domains=$DUCKDNS_DOMAINS&token=$DUCKDNS
 
 Changez les permissions permettant l'exécution du script avec la commande `sudo chmod +x /usr/local/bin/duckdns.sh`.
 
-Éditez ce fichier (avec nano) en changeant les variables `DUCKDNS_TOKEN` et `DUCKDNS_DOMAINS` par ceux que vous obtenez dans les instructions pour le RPi du site de Duck DNS (dans la commande commençant par `echo url=`, utilisez la valeur après `domains=` et `token=`). Ensuite, vous pouvez ajouter la ligne `/usr/local/bin/duckdns.sh` au fichier `/etc/rc.local`, juste avant `exit 0`. Redémarrer votre RPi, et vous devriez pouvoir vous y connecter en utilisant une adresse de type VOTREDOMAINE.duckdns.org.
+Éditez ce fichier (avec nano) en changeant les variables `DUCKDNS_TOKEN` et `DUCKDNS_DOMAINS` par ceux que vous obtenez dans les instructions pour le RPi du site de Duck DNS (dans la commande commençant par `echo url=`, utilisez la valeur après `domains=` et `token=`). Ensuite, vous pouvez changer la varible `use_duckdns` à `True` dans le fichier `/etc/rc.local`. Redémarrer votre RPi, et vous devriez pouvoir vous y connecter en utilisant une adresse de type VOTREDOMAINE.duckdns.org.
 
 
 ## 3. Installation de la machine virtuelle de développement
@@ -130,7 +99,7 @@ Sous *Système/Processeur*, choisissez le nombre de CPU à allouer. Si vous obse
 Sous *Affichage/Écran*, Ajustez la mémoire vidéo à *128 MB* et *Activer l'accélération 3D*. Si vous observez des plantages ou que l'écran se fige, désactivez au contraire l'accélération 3D. Les transitions seront moins fluides mais la VM fonctionnera sans plantage.
 La configuration de base est normalement terminée, vous pouvez valider et lancer la VM.
 
-> **Important**: la machine virtuelle Fedora est sensible aux fermetures inopinées. Assurez-vous de toujours fermer correctement la VM (en utilisant bouton d'arrêt en haut à droite de l'écran de la VM) pour éviter tout problème de corruption de données.
+> **Important**: la machine virtuelle Fedora est sensible aux fermetures inopinées. Assurez-vous de toujours éteindre correctement la VM (en utilisant bouton d'arrêt en haut à droite de l'écran de la VM) pour éviter tout problème de corruption de données qui vous forcerait à repartir de zéro.
 
 
 ## 4. Installation de l'environnement de compilation croisée
