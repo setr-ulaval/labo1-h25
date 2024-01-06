@@ -328,11 +328,11 @@ $ find . -lname '/*' | while read l ; do   echo ln -sf $(echo $(echo $l | sed 's
 
 ## 5. Configuration de l'environnement de développement
 
-Dans le cadre du cours, nous allons utiliser [Visual Studio Code](https://packages.microsoft.com/yumrepos/vscode/code-1.33.1-1554971173.el7.x86_64.rpm) (ci-après abbrévié VSC). Nous vous recommandons de ne pas utiliser une version plus récente que 1.31.1 (la version avec laquelle le laboratoire a été testée). Il n'y a toutefois pas de contre-indication particulière à utiliser la dernière version, mais certaines options de configuration pourraient être différentes. Vous êtes par ailleurs libres d'utiliser un autre environnement de développement, à votre convenance, mais vous _devez obligatoirement_ travailler en compilation croisée (autrement dit, le binaire doit être compilé sur _votre_ ordinateur et non le Raspberry Pi, et vous devez être en mesure de déboguer à partir de votre ordinateur) et nous ne pourrons potentiellement pas vous aider si vous choisissez un autre logiciel.
+Dans le cadre du cours, nous allons utiliser [Visual Studio Code](https://packages.microsoft.com/yumrepos/vscode/Packages/c/code-1.83.1-1696982959.el7.x86_64.rpm) (ci-après abbrévié VSC). Nous vous recommandons de ne pas utiliser une version plus récente que 1.83.1 (la version avec laquelle le laboratoire a été testée). Il n'y a toutefois pas de contre-indication particulière à utiliser la dernière version, mais certaines options de configuration pourraient être différentes. Vous êtes par ailleurs libres d'utiliser un autre environnement de développement, à votre convenance, mais vous _devez obligatoirement_ travailler en compilation croisée (autrement dit, le binaire doit être compilé sur _votre_ ordinateur et non le Raspberry Pi, et vous devez être en mesure de déboguer à partir de votre ordinateur) et nous ne pourrons potentiellement pas vous aider si vous choisissez un autre logiciel.
 
 ### 5.1. Préparation d'une configuration CMake
 
-[CMake](https://cmake.org/cmake/help/v3.10) est un outil permettant de mettre en place une chaîne de compilation efficace et portable. Nous allons l'utiliser dans le cadre du cours afin d'automatiser la compilation et l'édition de liens des TP. Pour ce faire, créez un nouveau fichier dans `arm-cross-comp-env/`, nommé `rpi-zero-w-toolchain.cmake` et insérez-y le contenu suivant :
+[CMake](https://cmake.org/cmake/help/v3.27) est un outil permettant de mettre en place une chaîne de compilation efficace et portable. Nous allons l'utiliser dans le cadre du cours afin d'automatiser la compilation et l'édition de liens des TP. Pour ce faire, créez un nouveau fichier dans `arm-cross-comp-env/`, nommé `rpi-zero-w-toolchain.cmake` et insérez-y le contenu suivant :
 
 ```
 # Identification du systeme cible
@@ -370,11 +370,13 @@ Une fois VSC ouvert, sélectionnez l'interface de recherche des extensions en cl
 <img src="img/vsc_1.png" style="width:410px"/> 
 <img src="img/vsc_2.png" style="width:410px"/>
 
-Afin d'être utilisée, l'extension doit maintenant _recharger_ l'interface de VSC, cliquez sur le bouton `Reload` pour le faire.
+Afin d'être utilisée, il se peut que l'extension doive maintenant _recharger_ l'interface de VSC, cliquez sur le bouton `Reload` pour le faire.
 
-<img src="img/vsc_3.png" style="width:410px"/>
+> **Vous devez installer les extensions suivantes :** `C/C++ Extension Pack` et `Native Debug`. Les extensions `CMake` et `Cmake Tools` devraient avoir été installées automatiquement.
 
-> **Vous devez installer les extensions suivantes :** `C/C++ Extension Pack` et `Native Debug`.
+
+<img src="img/vsc_4.png" style="width:510px"/>
+
 
 > Si vous utilisez l'image VirtualBox fournie, ces extensions devraient déjà être installées.
 
@@ -401,12 +403,28 @@ Par la suite, dans VSC, allez dans `Fichier > Ouvrir un dossier` et sélectionne
 
 > **Important** : ouvrez bien le dossier _src_ et non la racine (labo1-h24), sinon les scripts de configuration ne fonctionneront pas!
 
-À l'ouverture d'un nouveau projet, quelques notifications `CMake` apparaitront.  Assurez-vous de répondre *Oui* / *Autoriser*
+À l'ouverture d'un nouveau projet, VScode vous demande toujours si vous faites confiance au code que vous ouvrez. Assurez-vous de répondre oui et de cocher la case lui indiquant de faire également confiance au dossier parent, sinon le projet sera ouvert en mode limité.
+
+<img src="img/vsc_5.png" style="width:510px"/>
 
 
-<img src="img/vsc_cmake_cfg.png" style="width:410px"/> 
-<img src="img/vsc_cmake_IS.png" style="width:410px"/>
+Par la suite, quelques notifications apparaitront. Vous _devez_ configurer le projet à ce stade, en cliquant sur "Oui" à l'option "Voulez-vous configurer le projet src" :
 
+<img src="img/vsc_6.png" style="width:410px"/>
+
+Lorsque vous le faites, un menu s'ouvrira dans la portion supérieure de la fenêtre. **Assurez-vous de sélectionner "Unspecified" dans la liste des choix qui vous sont proposés** :
+
+<img src="img/vsc_7.png" style="width:800px"/>
+
+Par ailleurs, cliquez sur l'autre notification concernant la visibilité des options CMake et sélectionner "visible" dans le menu déroulant (cela n'est pas obligatoire, mais vous offre des raccourcis plus rapide pour compiler ou changer le mode de compilation) :
+
+<img src="img/vsc_8.png" style="width:800px"/>
+
+Une fois cela fait, vous devriez obtenir une sortie de terminal indiquant que CMake a terminé sa configuration avec succès (*Build files have been written to: ...*):
+
+<img src="img/vsc_9.png" style="width:800px"/>
+
+> À ce stade, validez également la version du compilateur utilisé par CMake. Si votre environnement est correctement configuré, elle **doit** être *12.3.0*, comme dans la capture d'écran ci-dessus. Si ce n'est pas le cas, c'est que vous avez fait une erreur durant la création de votre environnement et que les projets risquent de ne pas fonctionner.
 
 <!--- #### Configuration des répertoires de recherche d'en-têtes
 
@@ -419,14 +437,18 @@ VSC (et son extension C/C++) fournit plusieurs utilitaires pour faciliter la pro
 
 Il est maintenant temps de tester votre chaîne de compilation croisée. Dans VSC, allez dans le menu `Afficher`, puis `Palette de commandes`.
 
-> Cette palette de commandes est la manière privilégiée d'interagir avec les outils de VSC. Dans la suite des énoncés, nous l'appelerons simplement "Palette". Vous gagnerez probablement du temps à mémoriser le raccourci clavier permettant de l'ouvrir!
+> Cette palette de commandes est la manière privilégiée d'interagir avec les outils de VSC. Dans la suite des énoncés, nous l'appelerons simplement "Palette". Vous gagnerez probablement du temps à mémoriser le raccourci clavier permettant de l'ouvrir (Ctrl-Shift-P dans la VM, par exemple)!
 
-Dans la ligne d'édition qui apparaît en haut de l'écran, écrivez `CMake` (remarquez comment VSC modifie ses suggestions au fur et à mesure), puis sélectionnez `CMake Build`. VSC vous demandera alors de choisir entre `Debug`, `Release`, `MinSizeRel` et `RelWithDebInfo`. Pour le moment, sélectionnez `Debug`, mais sachez que `Release` pourra être fort utile lorsque vous aurez besoin du maximum de performance possible. Notez que vous pouvez également utiliser la touche F7 comme raccourci.
+Dans la ligne d'édition qui apparaît en haut de l'écran, écrivez `CMake` (remarquez comment VSC modifie ses suggestions au fur et à mesure), puis sélectionnez `CMake Build`. 
 
-Finalement, assurez-vous de désactiver les *Kits* pour forcer `CMake` à utiliser les configurations du projet.  Cliquez sur *No kits selected* et sélectionnez *Unspecified*
+> Il se peut que VSC vous demande alors de choisir entre `Debug`, `Release`, `MinSizeRel` et `RelWithDebInfo`. Pour le moment, sélectionnez `Debug`, mais sachez que `Release` pourra être fort utile lorsque vous aurez besoin du maximum de performance possible. Notez que vous pouvez également utiliser la touche F7 comme raccourci. Si la configuration par défaut est déjà à `Debug`, comme vous pouvez le voir dans la barre de statut à gauche (et qu'il ne vous pose donc pas la question), vous n'avez pas à faire de manipulation supplémentaire.
 
-<img src="img/vsc_kit2.png" style="width:390px"/>
-<img src="img/vsc_kit1.png" style="width:440px"/>
+Si la compilation se termine avec succès, vous devriez observer une sortie similaire à celle-ci :
+
+<img src="img/vsc_10.png" style="width:800px"/>
+
+Notez le *Build finished with exit code 0*, tout en bas, indiquant que la compilation s'est déroulée avec succès. Vous noterez que le compilateur produit plusieurs avertissements (*warnings*), qui ne sont pas des erreurs l'empêchant de compiler le programme, mais qui vous indique qu'il y a possiblement quelque chose qui cloche avec le code...
+
 
 ### 6.3. Exécution et débogage
 
@@ -483,7 +505,7 @@ Modifiez maintenant l'argument d'entrée, afin d'obtenir une initialisation de l
 
 ## 7. Modalités d'évaluation
 
-Ce travail est **individuel**. Aucun rapport n'est à remettre, mais vous devez être en mesure de démontrer que votre environnement de développement est fonctionnel et que vous savez utiliser ses fonctions basiques lors d'une évaluation en personne au PLT-0103. Cette évaluation sera faite lors des séances de laboratoire du **27 janvier 2023** et, si nécessaire, du **3 février 2023**. Ce travail compte pour **5%** de la note totale du cours.
+Ce travail est **individuel**. Aucun rapport n'est à remettre, mais vous devez être en mesure de démontrer que votre environnement de développement est fonctionnel et que vous savez utiliser ses fonctions basiques lors d'une évaluation en personne au PLT-0103. Cette évaluation sera faite lors des séances de laboratoire du **2 février 2024**. Ce travail compte pour **5%** de la note totale du cours.
 
 Le barême d'évaluation détaillé sera le suivant (laboratoire noté sur 20 pts):
 
