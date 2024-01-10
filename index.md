@@ -44,7 +44,7 @@ Si vous êtes sur le campus, nous vous suggérons d'utiliser Eduroam. Nous vous 
 
 #### 2.2.2. Votre propre réseau
 
-Utilisez la commande `nmtui` dans le terminal et suivez les instructions. En général, il suffit de sélectionner `Add connection` ou `Edit connection` (dépendant des réseaux déjà enregistrés), puis de sélectionner le réseau sur lequel vous voulez vous connecter. Une fois la configuration terminée, la connexion devrait se faire dans les 15-20 secondes.
+Utilisez la commande `nmtui` dans le terminal et suivez les instructions. En général, il suffit de sélectionner `Activate a connection` ou `Edit connection` (dépendant des réseaux déjà enregistrés), puis de sélectionner le réseau sur lequel vous voulez vous connecter. Une fois la configuration terminée, la connexion devrait se faire dans les 15-20 secondes.
 
 ## 3. Installation de la machine virtuelle de développement
 
@@ -65,19 +65,19 @@ Pour importer la machine virtuelle dans VirtualBox, cliquez sur *Nouvelle*.
 
 Vous pouvez choisir le nom de la machine virtuelle, pour *Type* sélectionnez *Linux* et *Fedora (64bit)* pour *Version*. 
 
-<img src="img/vbox_2.png" style="width:610px"/>
+<img src="img/vbox_2.png" style="width:800px"/>
 
 Dans la section _Hardware_, choisissez la mémoire et le nombre de CPU que vous allez allouer à la machine virtuelle (vous pourrez toujours ajuster plus tard au besoin). Nous vous recommandons au _minimum_ 2 processeurs et 4096 MB de RAM.
 
-<img src="img/vbox_2b.png" style="width:610px"/>
+<img src="img/vbox_2b.png" style="width:800px"/>
 
 Dans la section _Hard Disk_, sélectionnez *Utiliser un fichier de disque dur virtuel existant* et choisissez le fichier .vdi en cliquant qur l'icône en forme de dossier. Cliquez sur "Terminer" pour compléter la configuration.
 
-<img src="img/vbox_3.png" style="width:610px"/>
+<img src="img/vbox_3.png" style="width:800px"/>
 
 _Avant_ de démarrer la machine virtuelle, configurez sa mémoire vidéo en faisant *Clic-droit/Configuration...*. Dans l'onglet "Affichage", ajustez la mémoire vidéo à *128 MB* et *Activer l'accélération 3D*. Si vous observez des plantages ou que l'écran se fige, désactivez au contraire l'accélération 3D. Les transitions seront moins fluides mais la VM fonctionnera sans plantage. La configuration de base est alors normalement terminée, vous pouvez valider et lancer la VM.
 
-<img src="img/vbox_4.png" style="width:610px"/>
+<img src="img/vbox_4.png" style="width:800px"/>
 
 > **Important**: la machine virtuelle Fedora est sensible aux fermetures inopinées. Assurez-vous de toujours éteindre correctement la VM (en utilisant bouton d'arrêt en haut à droite de l'écran de la VM) pour éviter tout problème de corruption de données qui vous forcerait à repartir de zéro.
 
@@ -86,10 +86,10 @@ _Avant_ de démarrer la machine virtuelle, configurez sa mémoire vidéo en fais
 
 ### 4.1. Accès par SSH
 
-Par la suite, redémarrez le Raspberry Pi et vérifiez que vous pouvez vous connecter à distance via [SSH](https://chrisjean.com/ssh-tutorial-for-ubuntu-linux/). Nous vous suggérons de mettre en place une authentification par clé publique, pour vous éviter de devoir réécrire le même mot de passe à chaque connexion :
+Par la suite, redémarrez le Raspberry Pi et vérifiez que vous pouvez vous connecter à distance via [SSH](https://chrisjean.com/ssh-tutorial-for-ubuntu-linux/) en utilisant votre installation Linux (e.g., la machine virtuelle). Nous vous suggérons de mettre en place une authentification par clé publique, pour vous éviter de devoir réécrire le même mot de passe à chaque connexion :
 
 ```
-# L'étape suivante est à effectuer sur votre machine (PAS le Raspberry Pi) et n'est nécessaire que si vous n'avez pas déjà de clé SSH
+# L'étape suivante est à effectuer sur votre machine virtuelle (PAS le Raspberry Pi) et n'est nécessaire que si vous n'avez pas déjà de clé SSH
 $ ssh-keygen -t rsa -b 4096 -C "ecrivez_votre_nom_ici"
 # Pressez 3 fois sur Enter (les choix par défaut sont bons)
 
@@ -146,6 +146,8 @@ $ cd crosstool-ng-1.26.0
 $ ./bootstrap
 ```
 
+> Note : un avertissement concernant `gl_HOST_CPU_C_ABI_32BIT` pourrait apparaître à la fin de l'exécution, il n'est pas important dans votre cas.
+
 #### 5.1.1. Configuration et compilation de Crosstool-NG
 
 Une fois la commande `./bootstrap` exécutée, en restant dans le même répertoire, utilisez `./configure` pour préparer la compilation et `make` pour le compiler :
@@ -177,13 +179,20 @@ $ mkdir ct-config-rpi-zero
 $ cd ct-config-rpi-zero
 ```
 
-Au lieu de partir d'une configuration vide, nous allons utiliser le fichier de configuration fourni par le distributeur des Raspberry Pi. Dans le dossier `ct-config-rpi-zero`, téléchargez le fichier suivant et nommez le `.config` :
+Au lieu de partir d'une configuration vide, nous allons utiliser en utiliser une spécialement préparée pour le cours. Dans le dossier `ct-config-rpi-zero`, téléchargez le fichier suivant et nommez le `.config` :
 
 ```
 $ wget -O .config https://setr-ulaval.github.io/labo1-h24/etc/ct-ng-config
 ```
 
-Par la suite, lancez l'utilitaire de configuration de Crosstool-NG :
+
+#### 5.2.1. Ajustement des chemins (paths)
+
+La configuration telle que fournie est déjà prête à l'emploi **pour la machine virtuelle Fedora fournie**. Si vous utilisez un autre environnement (ex. votre propre installation Linux, les machines du 0103, etc.), vous **devez** la modifier afin d'éviter des problèmes qui vont entraîner des erreurs dans les prochains laboratoires!
+
+> Cette sous-section n'est donc à effectuer _que si vous n'utilisez PAS_ la machine virtuelle fournie.
+
+Pour se faire, lancez l'utilitaire de configuration de Crosstool-NG :
 
 ```
 $ ct-ng menuconfig
@@ -197,14 +206,11 @@ Vous devriez alors obtenir une interface de ce type :
 
 Allez dans la section _Paths and misc options_ et remplacez :
 
-* _Prefix directory_ : `${HOME}/arm-cross-comp-env/${CT_TARGET}` (il est important de le faire, car les scripts de compilation fournis assument ce chemin précis)
-* _Log to a file_ (tout en bas): désactivez l'option
+* _Prefix directory_ : `${HOME}/arm-cross-comp-env/${CT_TARGET}` (nous vous conseillons de conserver ce chemin, car les scripts de compilation fournis assument ce chemin précis)
+<!-- * _Log to a file_ (tout en bas): désactivez l'option -->
 <!--- * **Si vous utilisez un ordinateur du 0105** : Sur ces ordinateurs, il faut utiliser un dossier temporaire dédié et non pas l'espace de votre compte. Dans l'option _Working directory_. Remplacez donc `${CT_TOP_DIR}/.build` par `/gif3004/.build`.-->
 <!--- * _Patches origin_ : `Bundled only` (**très important**, sinon vous vous retrouverez avec une longue suite d'erreurs à la compilation) -->
 
-Voici la configuration requise sur votre machine virtuelle ou votre ordinateur.
-
-<img src="img/ct_im2.png" style="width:510px"/> 
 
 <!--- À droite, la configuration requise **sur un ordinateur du 0105**.-->
 <!--- <img src="img/ct_im4.png" style="width:510px"/>-->
@@ -229,14 +235,13 @@ Dans la section _Target options_, nous allons spécifier au compilateur les cara
 
 Dans la section _Operating System_, remplacez :
 
-* _Version of Linux_ : `6.1.35`
 * _Source of linux_ : `Custom location`
 * Une fois l'étape précédente effectuée, _Custom location_ : `chemin vers les sources du kernel`
 
 Dans la dernière étape, `chemin vers les sources du kernel` doit être le chemin absolu vers le dossier contenant les sources du noyau Linux utilisé sur le Raspberry Pi. Celui-ci peut-être situé à des endroits différents selon votre installation:
 
 * Si vous travaillez *sur les ordinateurs du laboratoire 0103/0105*, le chemin est `/opt/linux-rpi-6.1.54-rt15` 
-* Si vous travaillez *sur la machine virtuelle Fedora fournie*, le chemin est `/home/setr/rPi/linux-rpi-6.1.54-rt15`
+* Si vous travaillez *sur la machine virtuelle Fedora fournie*, le chemin est `/home/setr/rPi/linux-rpi-6.1.54-rt15` (c'est déjà la valeur par défaut)
 * Si vous travaillez *sur votre propre ordinateur*, téléchargez [l'archive suivante](http://wcours.gel.ulaval.ca/GIF3004/setrh24/linux-rpi-6.1.54-rt15.patched.tar.gz), décompressez-la et indiquez son chemin absolu.
 
 <!--- Dans la section _C-library_, remplacez :
@@ -249,12 +254,13 @@ Dans la section _Binary utilities_, remplacez :
 * _Version of binutils_ : `2.28.1`
 -->
 
-Dans la section _Debug facilities_ :
+<!-- Dans la section _Debug facilities_ :
 
 * Activez `gdb` et `strace`
 * Allez ensuite dans les options de configuration de `gdb` (la touche Espace active ou désactive, la touche Entrée permet d'entrer dans les options) et _désactivez_ l'élément `Enable python scripting`
 
 <img src="img/ct_im5.png" style="width:510px"/>
+-->
 
 N'oubliez pas d'enregistrer votre configuration (utilisez les flèches horizontales du clavier pour vous déplacer dans le menu du bas) puis quittez l'utilitaire.
 
@@ -289,7 +295,7 @@ Une fois cela fait, le répertoire `~/arm-cross-comp-env` devrait contenir un do
 * /usr/include, qui contient les en-têtes de ces librairies (nécessaires pour la compilation);
 * /opt, qui contient certains fichiers de configuration importants.
 
-Pour synchroniser ces dossiers, nous allons utiliser `rsync`. Cet outil permet de faire des mises à jour _incrémentales_, c'est-à-dire que seules les différences sont transférées.
+Pour synchroniser ces dossiers, nous allons utiliser `rsync`. Cet outil permet de faire des mises à jour _incrémentales_, c'est-à-dire que seules les différences sont transférées. Notez que vous devez modifier `adresse_ip_ou_nom_dhote` pour l'adresse ou le DNS de votre Raspberry Pi dans les commandes suivantes.
 
 ```
 $ cd ~/arm-cross-comp-env/arm-raspbian-linux-gnueabi/arm-raspbian-linux-gnueabi
@@ -300,11 +306,11 @@ $ rsync -av --numeric-ids --exclude "/usr/lib/.debug" --delete pi@adresse_ip_ou_
 Il reste par la suite un petit problème à corriger. Beaucoup de fichiers sont en fait des _liens_, qui évitent de devoir stocker deux fois le même fichier inutilement. Toutefois, certains de ces liens sont _absolus_, c'est-à-dire qu'ils contiennent un chemin absolu. Vous pouvez constater ce problème en testant, par exemple :
 
 ```
-$ ls -l sysroot/usr/lib/arm-linux-gnueabihf/libdl.so 
-lrwxrwxrwx 1 setr setr 35 15 jun  2017 sysroot/usr/lib/arm-linux-gnueabihf/libdl.so -> /lib/arm-linux-gnueabihf/libdl.so.2
+$ ls -l sysroot/usr/lib/arm-linux-gnueabihf/libm.so 
+lrwxrwxrwx 1 setr setr 34  3 oct 16:45 sysroot/usr/lib/arm-linux-gnueabihf/libm.so -> /lib/arm-linux-gnueabihf/libm.so.6
 ```
 
-Comme on le voit, le lien pointe vers un chemin absolu, qui n'existe pas sur notre plateforme de compilation. Il y a plusieurs solutions pour corriger ce problème, vous pouvez consulter [cette page](https://unix.stackexchange.com/questions/100918/convert-absolute-symlink-to-relative-symlink-with-simple-linux-command) pour en savoir plus, mais le plus simple est d'utiliser la commande suivante. Attention, le `find` doit être exécuté *dans* le répertoire _sysroot_, sinon les chemins ne seront pas convertis correctement!
+Comme on le voit, le lien pointe vers un chemin absolu, qui n'existe pas sur notre plateforme de compilation (votre terminal devrait d'ailleurs vous l'afficher en rouge). Il y a plusieurs solutions pour corriger ce problème, vous pouvez consulter [cette page](https://unix.stackexchange.com/questions/100918/convert-absolute-symlink-to-relative-symlink-with-simple-linux-command) pour en savoir plus, mais le plus simple est d'utiliser la commande suivante. Attention, le `find` doit être exécuté *dans* le répertoire _sysroot_, sinon les chemins ne seront pas convertis correctement!
 
 ```
 $ cd ~/arm-cross-comp-env/arm-raspbian-linux-gnueabi/arm-raspbian-linux-gnueabi/sysroot
@@ -313,10 +319,12 @@ $ find . -lname '/*' | while read l ; do   echo ln -sf $(echo $(echo $l | sed 's
 
 > Vous devrez effectuer cette synchronisation _à chaque fois_ que vous ajouterez une librairie ou mettrez à jour votre système sur le Raspberry Pi.
 
+> Ignorez l'erreur éventuelle concernant `/usr/lib/ssl/certs/certs`, ce répertoire ne sera pas nécessaire dans le cadre du cours
+
 
 ## 6. Configuration de l'environnement de développement
 
-Dans le cadre du cours, nous allons utiliser [Visual Studio Code](https://packages.microsoft.com/yumrepos/vscode/Packages/c/code-1.83.1-1696982959.el7.x86_64.rpm) (ci-après abbrévié VSC). Nous vous recommandons de ne pas utiliser une version plus récente que 1.83.1 (la version avec laquelle le laboratoire a été testée). Il n'y a toutefois pas de contre-indication particulière à utiliser la dernière version, mais certaines options de configuration pourraient être différentes. Vous êtes par ailleurs libres d'utiliser un autre environnement de développement, à votre convenance, mais vous _devez obligatoirement_ travailler en compilation croisée (autrement dit, le binaire doit être compilé sur _votre_ ordinateur et non le Raspberry Pi, et vous devez être en mesure de déboguer à partir de votre ordinateur) et nous ne pourrons potentiellement pas vous aider si vous choisissez un autre logiciel.
+Dans le cadre du cours, nous allons utiliser [Visual Studio Code](https://packages.microsoft.com/yumrepos/vscode/Packages/c/code-1.83.1-1696982959.el7.x86_64.rpm) (ci-après abbrévié VSC). Nous vous recommandons de ne pas utiliser une version plus récente que 1.83.1 (la version présente dans la VM et avec laquelle le laboratoire a été testée). Il n'y a toutefois pas de contre-indication particulière à utiliser une version plus récente, mais certaines options de configuration ou de débogage pourraient être différentes. Vous êtes par ailleurs libres d'utiliser un autre environnement de développement, à votre convenance, mais vous _devez obligatoirement_ travailler en compilation croisée (autrement dit, le binaire doit être compilé sur _votre_ ordinateur et non le Raspberry Pi, et vous devez être en mesure de déboguer à partir de votre ordinateur) et nous ne pourrons potentiellement pas vous aider si vous choisissez un autre logiciel.
 
 ### 6.1. Préparation d'une configuration CMake
 
@@ -358,15 +366,12 @@ Une fois VSC ouvert, sélectionnez l'interface de recherche des extensions en cl
 <img src="img/vsc_1.png" style="width:410px"/> 
 <img src="img/vsc_2.png" style="width:410px"/>
 
-Afin d'être utilisée, il se peut que l'extension doive maintenant _recharger_ l'interface de VSC, cliquez sur le bouton `Reload` pour le faire.
 
 > **Vous devez installer les extensions suivantes :** `C/C++ Extension Pack` et `Native Debug`. Les extensions `CMake` et `Cmake Tools` devraient avoir été installées automatiquement.
 
 
 <img src="img/vsc_4.png" style="width:510px"/>
 
-
-> Si vous utilisez l'image VirtualBox fournie, ces extensions devraient déjà être installées.
 
 
 ## 7. Configuration du projet du laboratoire
@@ -429,7 +434,7 @@ Il est maintenant temps de tester votre chaîne de compilation croisée. Dans VS
 
 Dans la ligne d'édition qui apparaît en haut de l'écran, écrivez `CMake` (remarquez comment VSC modifie ses suggestions au fur et à mesure), puis sélectionnez `CMake Build`. 
 
-> Il se peut que VSC vous demande alors de choisir entre `Debug`, `Release`, `MinSizeRel` et `RelWithDebInfo`. Pour le moment, sélectionnez `Debug`, mais sachez que `Release` pourra être fort utile lorsque vous aurez besoin du maximum de performance possible. Notez que vous pouvez également utiliser la touche F7 comme raccourci. Si la configuration par défaut est déjà à `Debug`, comme vous pouvez le voir dans la barre de statut à gauche (et qu'il ne vous pose donc pas la question), vous n'avez pas à faire de manipulation supplémentaire.
+> Il se peut que VSC vous demande alors de choisir entre `Debug`, `Release`, `MinSizeRel` et `RelWithDebInfo`. Pour le moment, sélectionnez `Debug`, mais sachez que `Release` pourra être fort utile lorsque vous aurez besoin du maximum de performance possible. Notez que vous pouvez également utiliser la touche F7 comme raccourci. Si la configuration par défaut est déjà à `Debug`, comme vous pouvez le voir dans la barre de statut en bas à gauche (et qu'il ne vous pose donc pas la question), vous n'avez pas à faire de manipulation supplémentaire.
 
 Si la compilation se termine avec succès, vous devriez observer une sortie similaire à celle-ci :
 
@@ -443,6 +448,8 @@ Notez le *Build finished with exit code 0*, tout en bas, indiquant que la compil
 Si la compilation se termine avec succès, vous pouvez maintenant passer à l'étape de l'exécution du programme. Ici, nous cherchons à exécuter le programme sur le Raspberry Pi, mais en vous permettant de voir sa sortie et de le contrôler depuis votre ordinateur. Nous vous fournissons des scripts permettant de configurer VSC à cet effet. Vous devez cependant préalablement configurer un paramètre important. Dans le fichier `.vscode/tasks.json`, remplacez `adresse_de_votre_raspberry_pi` par l'adresse (IP ou DNS) effective de votre Raspberry Pi. Faites de même dans le fichier `.vscode/launch.json`, en conservant toutefois le `:4567` qui suit l'adresse du Raspberry Pi.
 
 Une fois cela fait, vous pouvez synchroniser l'exécutable et lancer le débogage en allant dans le menu _Déboguer_ puis _Lancer le débogage_ (la touche F5 est un raccourci plus rapide ayant le même effet). Après quelques secondes (le script utilise rsync pour synchroniser les fichiers vers le Raspberry Pi), l'interface de débogage devrait s'afficher et vous permettre de déboguer le programme à distance.
+
+> Il est d'usage de mettre un point d'arrêt (_breakpoint_) au début de la fonction `main()`. Cela permet de s'assurer que le débogueur est bien lancé avant de commencer l'exécution du programme. Pour ajouter un point d'arrêt dans VScode, cliquez simplement à gauche d'un numéro de ligne; un petit cercle rouge devrait alors apparaître, indiquant la présence d'un point d'arrêt. Vous n'êtes évidemment pas limités à un seul point d'arrêt par programme!
 
 #### 7.3.1. Entrée et sortie standard
 
@@ -497,8 +504,8 @@ Ce travail est **individuel**. Aucun rapport n'est à remettre, mais vous devez 
 
 Le barême d'évaluation détaillé sera le suivant (laboratoire noté sur 20 pts):
 
-* (4 pts) Raspberry Pi fonctionnel, y compris à distance (via SSH);
-* (6 pts) Chaîne de compilation croisée correctement construite et installée dans `$HOME/arm-cross-comp-env`, capacité à produire un binaire ARM;
+* (3 pts) Raspberry Pi fonctionnel, y compris à distance (via SSH);
+* (7 pts) Chaîne de compilation croisée correctement construite et installée dans `$HOME/arm-cross-comp-env`, capacité à produire un binaire ARM;
 * (2 pts) Visual Studio Code installé et fonctionnel, débogage à distance utilisable;
 * (6 pts) Programme débogué: le programme doit *s'exécuter sans erreur et produire un résultat correct*. L'étudiant doit pouvoir expliquer les raisons des erreurs dans le programme initial;
 * (2 pts) Programme corrigé: le programme doit pouvoir être compilé sans générer *aucun warning* et ce en produisant toujours un résultat correct.
