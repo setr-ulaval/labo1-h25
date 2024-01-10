@@ -500,7 +500,7 @@ Modifiez maintenant l'argument d'entrée, afin d'obtenir une initialisation de l
 
 ## 8. Modalités d'évaluation
 
-Ce travail est **individuel**. Aucun rapport n'est à remettre, mais vous devez être en mesure de démontrer que votre environnement de développement est fonctionnel et que vous savez utiliser ses fonctions basiques lors d'une évaluation en personne au PLT-0103. Cette évaluation sera faite lors des séances de laboratoire du **2 février 2024**. Ce travail compte pour **5%** de la note totale du cours.
+Ce travail est **individuel**. Aucun rapport n'est à remettre, mais vous devez être en mesure de démontrer que votre environnement de développement est fonctionnel et que vous savez utiliser ses fonctions basiques lors d'une évaluation en personne au PLT-0103. Cette évaluation sera faite lors des séances de laboratoire du **2 février 2024**. Ce travail compte pour **6%** de la note totale du cours.
 
 Le barême d'évaluation détaillé sera le suivant (laboratoire noté sur 20 pts):
 
