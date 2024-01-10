@@ -15,7 +15,7 @@ Ce travail pratique vise les objectifs suivants :
 
 ## 2. Préparation du Raspberry Pi
 
-La carte MicroSD du kit qui vous a été fourni contient normalement déjà l'image système nécessaire au cours. Toutefois, dans le cas où vous recevez un kit avec une MicroSD non-initialisée, que vous voudriez revenir à l'état initial de l'image, ou simplement créer une copie, vous pouvez télécharger le fichier *.img* contenant l'[image du cours](http://wcours.gel.ulaval.ca/GIF3004/setrh24/imgh24-v2.zip). Ce fichier doit être copié en mode bas niveau sur la carte MicroSD (par exemple en utilisant `dd` sous Linux, ou un programme tel que [Rufus](https://rufus.ie/en/) sur Windows).
+La carte MicroSD du kit qui vous a été fourni contient normalement déjà l'image système nécessaire au cours. Toutefois, dans le cas où vous recevez un kit avec une MicroSD non-initialisée, que vous voudriez revenir à l'état initial de l'image, ou simplement créer une copie, vous pouvez télécharger le fichier *.img* contenant l'[image du cours](http://wcours.gel.ulaval.ca/GIF3004/setrh24/imgh24-v2.zip). Ce fichier doit être copié en mode bas niveau sur une carte MicroSD d'une capacité d'au moins *32 GB* (par exemple en utilisant `dd` sous Linux, ou un programme tel que [Rufus](https://rufus.ie/en/) sur Windows).
 
 La première des tâches à réaliser est de démarrer le Raspberry Pi Zero W, de mettre en place sa configuration initiale et de vous assurer de son bon fonctionnement. Par la suite, vous devrez installer sur votre ordinateur l'environnement de développement et de compilation croisée qui vous servira tout au long de la session. 
 
@@ -42,11 +42,49 @@ Si vous êtes sur le campus, nous vous suggérons d'utiliser Eduroam. Nous vous 
 
 > Note : si vous n'êtes pas familier avec les éditeurs de texte en console, nous vous suggérons d'utiliser `nano` (par exemple, dans ce cas-ci, `sudo nano /etc/NetworkManager/system-connections/eduroam.nmconnection`). Une fois vos modifications effectuées, utilisez Ctrl+X pour quitter, puis Y (pour enregistrer vos modifications) et Enter (pour conserver le même nom de fichier). Si vous êtes familiers avec d'autres éditeurs, vous êtes évidemment libre de les utiliser.
 
-#### 2.2.2 Votre propre réseau
+#### 2.2.2. Votre propre réseau
 
 Utilisez la commande `nmtui` dans le terminal et suivez les instructions. En général, il suffit de sélectionner `Add connection` ou `Edit connection` (dépendant des réseaux déjà enregistrés), puis de sélectionner le réseau sur lequel vous voulez vous connecter. Une fois la configuration terminée, la connexion devrait se faire dans les 15-20 secondes.
 
-### 2.3. Accès par SSH
+## 3. Installation de la machine virtuelle de développement
+
+Ce cours requiert l'utilisation d'un système GNU/Linux. Dans le cadre du cours, vous avez deux options :
+
+* Utiliser un des ordinateurs du laboratoire informatique 0105, sur lesquels les logiciels et outils nécessaires au cours sont pré-installés;
+* Télécharger une machine virtuelle [VirtualBox](https://www.virtualbox.org/) à [l'adresse suivante](http://wcours.gel.ulaval.ca/GIF3004/setrh24/setrh2024.vdi.zip) (attention, téléchargement de 10GB). Le nom d'utilisateur est `setr` et le mot de passe `setrh2024`, vous n'avez pas accès à la commande `sudo`, mais pouvez passer en mode _root_ en utilisant `su`;
+* Utiliser votre propre installation Linux, notez que nous ne pouvons dans ce cas garantir que les étapes d'installation et de configuration seront exactement les mêmes (vous pouvez passer à la section suivante si vous choisissez cette option).
+
+> Note : nous offrons également une version VMDK de l'image, si vous souhaitez utiliser VMware. Dans ce cas, ne tenez pas directement compte des instructions suivantes (nous supposons que vous savez comment configure VMware).
+
+### 3.1. Lancement de la machine virtuelle
+
+Commencez par décompresser le fichier setrh2024.vdi.zip téléchargé, il devrait contenir un unique fichier .vdi.
+Pour importer la machine virtuelle dans VirtualBox, cliquez sur *Nouvelle*. 
+
+<img src="img/vbox_1.png" style="width:510px"/>
+
+Vous pouvez choisir le nom de la machine virtuelle, pour *Type* sélectionnez *Linux* et *Fedora (64bit)* pour *Version*. 
+
+<img src="img/vbox_2.png" style="width:610px"/>
+
+Dans la section _Hardware_, choisissez la mémoire et le nombre de CPU que vous allez allouer à la machine virtuelle (vous pourrez toujours ajuster plus tard au besoin). Nous vous recommandons au _minimum_ 2 processeurs et 4096 MB de RAM.
+
+<img src="img/vbox_2b.png" style="width:610px"/>
+
+Dans la section _Hard Disk_, sélectionnez *Utiliser un fichier de disque dur virtuel existant* et choisissez le fichier .vdi en cliquant qur l'icône en forme de dossier. Cliquez sur "Terminer" pour compléter la configuration.
+
+<img src="img/vbox_3.png" style="width:610px"/>
+
+_Avant_ de démarrer la machine virtuelle, configurez sa mémoire vidéo en faisant *Clic-droit/Configuration...*. Dans l'onglet "Affichage", ajustez la mémoire vidéo à *128 MB* et *Activer l'accélération 3D*. Si vous observez des plantages ou que l'écran se fige, désactivez au contraire l'accélération 3D. Les transitions seront moins fluides mais la VM fonctionnera sans plantage. La configuration de base est alors normalement terminée, vous pouvez valider et lancer la VM.
+
+<img src="img/vbox_4.png" style="width:610px"/>
+
+> **Important**: la machine virtuelle Fedora est sensible aux fermetures inopinées. Assurez-vous de toujours éteindre correctement la VM (en utilisant bouton d'arrêt en haut à droite de l'écran de la VM) pour éviter tout problème de corruption de données qui vous forcerait à repartir de zéro.
+
+
+## 4. Configuration de la connexion à distance
+
+### 4.1. Accès par SSH
 
 Par la suite, redémarrez le Raspberry Pi et vérifiez que vous pouvez vous connecter à distance via [SSH](https://chrisjean.com/ssh-tutorial-for-ubuntu-linux/). Nous vous suggérons de mettre en place une authentification par clé publique, pour vous éviter de devoir réécrire le même mot de passe à chaque connexion :
 
@@ -61,7 +99,7 @@ $ ssh-copy-id pi@adresse_ip_de_votre_raspberry_pi
 
 > Si tout fonctionne à ce stade, vous ne devriez plus avoir à brancher un clavier sur votre Raspberry Pi, puisque vous pourrez l'administrer à distance avec SSH, qui vous offre le même terminal que celui natif du Raspberry Pi.
 
-### 2.4. Configuration d'un résolveur DNS (optionnel)
+### 4.2. Configuration d'un résolveur DNS (optionnel)
 
 Nous recommandons finalement l'installation et l'utilisation d'un résolveur DNS tel que [DuckDNS](http://duckdns.org) (gratuit), qui vous permettra de vous connecter plus facilement à votre Raspberry Pi en vous permettant d'utiliser un nom de domaine tel que "tarteauxframboises.duckdns.org" plutôt qu'une adresse IP pouvant potentiellement varier au fil de la session -- et qui vous forcera à brancher un écran pour l'obtenir.
 
@@ -83,26 +121,7 @@ Changez les permissions permettant l'exécution du script avec la commande `sudo
 Éditez ce fichier (avec nano) en changeant les variables `DUCKDNS_TOKEN` et `DUCKDNS_DOMAINS` par ceux que vous obtenez dans les instructions pour le RPi du site de Duck DNS (dans la commande commençant par `echo url=`, utilisez la valeur après `domains=` et `token=`). Ensuite, vous pouvez changer la varible `use_duckdns` à `True` dans le fichier `/etc/rc.local`. Redémarrer votre RPi, et vous devriez pouvoir vous y connecter en utilisant une adresse de type VOTREDOMAINE.duckdns.org.
 
 
-## 3. Installation de la machine virtuelle de développement
-
-Ce cours requiert l'utilisation d'un système GNU/Linux. Dans le cadre du cours, vous avez deux options :
-
-* Utiliser un des ordinateurs du laboratoire informatique 0105, sur lesquels les logiciels et outils nécessaires au cours sont pré-installés;
-* Télécharger une machine virtuelle [VirtualBox](https://www.virtualbox.org/) à [l'adresse suivante](http://wcours.gel.ulaval.ca/GIF3004/setrh24/setrh2024.zip) -- le nom d'utilisateur est `setr` et le mot de passe `setrh2024`, vous n'avez pas accès à la commande `sudo`, mais pouvez passer en mode _root_ en utilisant `su`;
-* Utiliser votre propre installation Linux, notez que nous ne pouvons dans ce cas garantir que les étapes d'installation et de configuration seront exactement les mêmes (vous pouvez passer à la section suivante si vous choisissez cette option).
-
-Commencez par décompresser le fichier .zip téléchargé, il devrait contenir un unique fichier .vdi.
-Pour importer la machine virtuelle dans VirtualBox, cliquez sur *Nouvelle*. Vous pouvez choisir le nom de la machine virtuelle, pour *Type* sélectionnez *Linux* et *Fedora (64bit)* pour *Version*. Validez en appuyant sur *Suivant* et choisissez la mémoire que vous allez allouer à la machine virtuelle (vous pourrez toujours ajuster plus tard au besoin), *Suivant*. Sélectionner la dernière option *Utiliser un fichier de disque dur virtuel existant* et choisissez le fichier .vdi en cliquant qur l'icône en forme de dossier. *Créer* pour finaliser l'étape de création de la machine virtuelle.
-
-Vous pouvez ensuite la configurer avec *Clic-droit/Configuration...*.
-Sous *Système/Processeur*, choisissez le nombre de CPU à allouer. Si vous observez des plantages au démarrage de la VM, assurez-vous que le nombre de CPU est > 1. Assurez-vous également d'allouer au minimum 4096 MB de RAM.
-Sous *Affichage/Écran*, Ajustez la mémoire vidéo à *128 MB* et *Activer l'accélération 3D*. Si vous observez des plantages ou que l'écran se fige, désactivez au contraire l'accélération 3D. Les transitions seront moins fluides mais la VM fonctionnera sans plantage.
-La configuration de base est normalement terminée, vous pouvez valider et lancer la VM.
-
-> **Important**: la machine virtuelle Fedora est sensible aux fermetures inopinées. Assurez-vous de toujours éteindre correctement la VM (en utilisant bouton d'arrêt en haut à droite de l'écran de la VM) pour éviter tout problème de corruption de données qui vous forcerait à repartir de zéro.
-
-
-## 4. Installation de l'environnement de compilation croisée
+## 5. Installation de l'environnement de compilation croisée
 
 Le Raspberry Pi possède un processeur dont l'architecture (ARM) diffère de celle de votre ordinateur (x86-64). Vous ne pouvez donc pas directement transférer un exécutable compilé sur votre ordinateur. Il faut plutôt utiliser un environnement de _compilation croisée_, qui permettra à votre ordinateur de générer des binaires compatibles avec l'architecture ARM du Raspberry Pi. Pour mettre en place cet environnement, nous devrons (dans l'ordre) :
 
@@ -115,7 +134,7 @@ Le Raspberry Pi possède un processeur dont l'architecture (ARM) diffère de cel
 Notez que la compilation de cet environnement peut prendre un certain temps. Cette installation doit être faite *que vous utilisiez ou non la machine virtuelle fournie*.
 
 
-### 4.1. Installation de Crosstool-NG
+### 5.1. Installation de Crosstool-NG
 
 Pour installer Crosstool-NG, récupérez d'abord la version utilisée dans le cours, puis exécutez le script `bootstrap` :
 
@@ -127,7 +146,7 @@ $ cd crosstool-ng-1.26.0
 $ ./bootstrap
 ```
 
-#### 4.1.1. Configuration et compilation de Crosstool-NG
+#### 5.1.1. Configuration et compilation de Crosstool-NG
 
 Une fois la commande `./bootstrap` exécutée, en restant dans le même répertoire, utilisez `./configure` pour préparer la compilation et `make` pour le compiler :
 
@@ -148,7 +167,7 @@ export PATH=$PATH:$HOME/crosstool-install/bin
 > **Note** : il se peut que l'étape du `configure` échoue si vous effectuez l'installation sur votre ordinateur (sans utiliser la machine virtuelle du cours). Assurez-vous dans ce cas [d'avoir installé toutes les dépendances de Crosstool-NG](https://crosstool-ng.github.io/docs/os-setup/). Cette étape a déjà été effectuée pour vous sur les ordinateurs du lab ou avec la machine virtuelle fournie.
 
 
-### 4.2. Configuration de l'environnement de compilation croisée
+### 5.2. Configuration de l'environnement de compilation croisée
 
 Nous allons maintenant préparer la compilation de l'environnement de compilation croisée (oui, c'est méta). Pour ce faire, Crosstool-NG a besoin d'informations sur notre système _cible_ (le Raspberry Pi). Créez tout d'abord un dossier nommé `ct-config-rpi-zero` dans votre dossier personnel et allez à l'intérieur :
 
@@ -240,7 +259,7 @@ Dans la section _Debug facilities_ :
 N'oubliez pas d'enregistrer votre configuration (utilisez les flèches horizontales du clavier pour vous déplacer dans le menu du bas) puis quittez l'utilitaire.
 
 
-### 4.3. Compilation et installation de la chaîne de compilation
+### 5.3. Compilation et installation de la chaîne de compilation
 
 Utilisez la commande suivante pour lancer la compilation :
 
@@ -251,7 +270,7 @@ $ ct-ng build
 Cette compilation peut prendre un bon moment (comptez au moins 30 minutes), dépendant de la puissance de votre ordinateur. Si vous utilisez une machine virtuelle, pensez à augmenter le nombre de processeurs alloués à celle-ci, puisque Crosstool-NG peut en tirer parti. Vous aurez également besoin d'une bonne connexion Internet.
 
 
-#### 4.3.1. Validation du contenu de la chaîne de compilation
+#### 5.3.1. Validation du contenu de la chaîne de compilation
 
 Une fois cela fait, le répertoire `~/arm-cross-comp-env` devrait contenir un dossier nommé `arm-raspbian-linux-gnueabi`. Dans ce dossier, vous retrouverez plusieurs choses, mais en particulier :
 
@@ -260,7 +279,7 @@ Une fois cela fait, le répertoire `~/arm-cross-comp-env` devrait contenir un do
 
 > Note : si votre répertoire `~/arm-cross-comp-env` contient plutôt un dossier nommé `arm-raspbian-linux-gnueabihf` (avec "hf" à la fin), ajoutez ce suffixe à tous les endroits où on mentionne "arm-raspbian-linux-gnueabi" à partir d'ici.
 
-### 4.4. Synchronisation avec le Raspberry Pi
+### 5.4. Synchronisation avec le Raspberry Pi
 
 > **Important** : attendez que l'étape précédente soit _terminée sans erreurs_ avant de continuer.
 
@@ -295,11 +314,11 @@ $ find . -lname '/*' | while read l ; do   echo ln -sf $(echo $(echo $l | sed 's
 > Vous devrez effectuer cette synchronisation _à chaque fois_ que vous ajouterez une librairie ou mettrez à jour votre système sur le Raspberry Pi.
 
 
-## 5. Configuration de l'environnement de développement
+## 6. Configuration de l'environnement de développement
 
 Dans le cadre du cours, nous allons utiliser [Visual Studio Code](https://packages.microsoft.com/yumrepos/vscode/Packages/c/code-1.83.1-1696982959.el7.x86_64.rpm) (ci-après abbrévié VSC). Nous vous recommandons de ne pas utiliser une version plus récente que 1.83.1 (la version avec laquelle le laboratoire a été testée). Il n'y a toutefois pas de contre-indication particulière à utiliser la dernière version, mais certaines options de configuration pourraient être différentes. Vous êtes par ailleurs libres d'utiliser un autre environnement de développement, à votre convenance, mais vous _devez obligatoirement_ travailler en compilation croisée (autrement dit, le binaire doit être compilé sur _votre_ ordinateur et non le Raspberry Pi, et vous devez être en mesure de déboguer à partir de votre ordinateur) et nous ne pourrons potentiellement pas vous aider si vous choisissez un autre logiciel.
 
-### 5.1. Préparation d'une configuration CMake
+### 6.1. Préparation d'une configuration CMake
 
 [CMake](https://cmake.org/cmake/help/v3.27) est un outil permettant de mettre en place une chaîne de compilation efficace et portable. Nous allons l'utiliser dans le cadre du cours afin d'automatiser la compilation et l'édition de liens des TP. Pour ce faire, créez un nouveau fichier dans `arm-cross-comp-env/`, nommé `rpi-zero-w-toolchain.cmake` et insérez-y le contenu suivant :
 
@@ -332,7 +351,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
 Nous réutiliserons cette configuration générique pour tous les projets du cours. Nous verrons plus loin comment la lier aux dits projets.
 
-### 5.2. Installer les extensions requises par VSC
+### 6.2. Installer les extensions requises par VSC
 
 Une fois VSC ouvert, sélectionnez l'interface de recherche des extensions en cliquant sur la cinquième icône dans la barre de gauche. Par la suite, recherchez l'extension "C/C++ Extension Pack" et installez le premier résultat. Faites de même pour l'extension "Native Debug":
 
@@ -350,11 +369,11 @@ Afin d'être utilisée, il se peut que l'extension doive maintenant _recharger_ 
 > Si vous utilisez l'image VirtualBox fournie, ces extensions devraient déjà être installées.
 
 
-## 6. Configuration du projet du laboratoire
+## 7. Configuration du projet du laboratoire
 
 Nous allons maintenant configurer un nouveau projet pour ce laboratoire.
 
-### 6.1. Création d'un nouveau projet
+### 7.1. Création d'un nouveau projet
 
 Sur VSC, les projets sont simplement des dossiers. Créez donc dans votre dossier personnel un nouveau dossier nommé _projets_ puis, dans celui-ci, clonez le dépôt Git suivant :
 
@@ -402,7 +421,7 @@ VSC (et son extension C/C++) fournit plusieurs utilitaires pour faciliter la pro
 <img src="img/vsc_incpaths.png" style="width:710px"/>
 -->
 
-### 6.2. Compilation croisée
+### 7.2. Compilation croisée
 
 Il est maintenant temps de tester votre chaîne de compilation croisée. Dans VSC, allez dans le menu `Afficher`, puis `Palette de commandes`.
 
@@ -419,13 +438,13 @@ Si la compilation se termine avec succès, vous devriez observer une sortie simi
 Notez le *Build finished with exit code 0*, tout en bas, indiquant que la compilation s'est déroulée avec succès. Vous noterez que le compilateur produit plusieurs avertissements (*warnings*), qui ne sont pas des erreurs l'empêchant de compiler le programme, mais qui vous indique qu'il y a possiblement quelque chose qui cloche avec le code...
 
 
-### 6.3. Exécution et débogage
+### 7.3. Exécution et débogage
 
 Si la compilation se termine avec succès, vous pouvez maintenant passer à l'étape de l'exécution du programme. Ici, nous cherchons à exécuter le programme sur le Raspberry Pi, mais en vous permettant de voir sa sortie et de le contrôler depuis votre ordinateur. Nous vous fournissons des scripts permettant de configurer VSC à cet effet. Vous devez cependant préalablement configurer un paramètre important. Dans le fichier `.vscode/tasks.json`, remplacez `adresse_de_votre_raspberry_pi` par l'adresse (IP ou DNS) effective de votre Raspberry Pi. Faites de même dans le fichier `.vscode/launch.json`, en conservant toutefois le `:4567` qui suit l'adresse du Raspberry Pi.
 
 Une fois cela fait, vous pouvez synchroniser l'exécutable et lancer le débogage en allant dans le menu _Déboguer_ puis _Lancer le débogage_ (la touche F5 est un raccourci plus rapide ayant le même effet). Après quelques secondes (le script utilise rsync pour synchroniser les fichiers vers le Raspberry Pi), l'interface de débogage devrait s'afficher et vous permettre de déboguer le programme à distance.
 
-#### 6.3.1. Entrée et sortie standard
+#### 7.3.1. Entrée et sortie standard
 
 **Note**: cette sous-section est optionnelle, mais elle contient des informations qui peuvent vous aider pour l'exécution et le débogage de vos programmes, non seulement pour ce premier laboratoire, mais aussi pour les suivants.
 
@@ -450,7 +469,7 @@ De cette manière, Linux va faire "comme si" vous aviez tapé au clavier le text
 Finalement, une fois le développement du programme et de la chaîne de compilation croisée terminés, notez que vous pouvez exécuter le programme directement sur le Raspberry Pi, via SSH. Assurez-vous d'y copier préalablement la bonne version de votre programme `SETR_TP1`. Dans ce mode, vous n'aurez toutefois pas accès à un débogueur.
 
 
-### 6.4. Correction des bogues
+### 7.4. Correction des bogues
 
 À ce stade, vous devriez être en mesure de lancer une session de débogage à distance sur le Raspberry Pi. Il est maintenant temps d'utiliser tout cela à bon escient! Le fichier qui vous est fourni **contient trois erreurs distinctes** en plus de générer plusieurs avertissements de la part du compilateur. Ces erreurs ne sont pas des erreurs de compilation, mais des erreurs de logique, qui empêchent le programme d'avoir le bon comportement -- et qui, comme vous le constaterez, le font planter. Vous devez les identifier et les corriger en utilisant le débogueur de VSC. Vous devez également pouvoir expliquer leur cause, de même que les corrections à apporter pour que le programme fonctionne correctement. 
 
@@ -472,7 +491,7 @@ Au vu des résultats de profilage obtenus, pouvez-vous donner le nombre d'appels
 Modifiez maintenant l'argument d'entrée, afin d'obtenir une initialisation de la liste différente, et refaites un profilage. Obtenez-vous des résultats différents? Pourquoi?-->
 
 
-## 7. Modalités d'évaluation
+## 8. Modalités d'évaluation
 
 Ce travail est **individuel**. Aucun rapport n'est à remettre, mais vous devez être en mesure de démontrer que votre environnement de développement est fonctionnel et que vous savez utiliser ses fonctions basiques lors d'une évaluation en personne au PLT-0103. Cette évaluation sera faite lors des séances de laboratoire du **2 février 2024**. Ce travail compte pour **5%** de la note totale du cours.
 
@@ -485,7 +504,7 @@ Le barême d'évaluation détaillé sera le suivant (laboratoire noté sur 20 pt
 * (2 pts) Programme corrigé: le programme doit pouvoir être compilé sans générer *aucun warning* et ce en produisant toujours un résultat correct.
 
 
-## 8. Ressources et lectures connexes
+## 9. Ressources et lectures connexes
 
 * [Duck DNS](https://www.duckdns.org/)
 * La [documentation de Raspbian](https://www.raspbian.org/RaspbianDocumentation), la distribution Linux sur laquelle est basée l'image du cours.
