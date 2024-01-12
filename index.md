@@ -54,7 +54,7 @@ Ce cours requiert l'utilisation d'un système GNU/Linux. Dans le cadre du cours,
 * Télécharger une machine virtuelle [VirtualBox](https://www.virtualbox.org/) à [l'adresse suivante](http://wcours.gel.ulaval.ca/GIF3004/setrh24/setrh2024.vdi.zip) (attention, téléchargement de 10GB). Le nom d'utilisateur est `setr` et le mot de passe `setrh2024`, vous n'avez pas accès à la commande `sudo`, mais pouvez passer en mode _root_ en utilisant `su`;
 * Utiliser votre propre installation Linux, notez que nous ne pouvons dans ce cas garantir que les étapes d'installation et de configuration seront exactement les mêmes (vous pouvez passer à la section suivante si vous choisissez cette option).
 
-> Note : nous offrons également une version VMDK de l'image, si vous souhaitez utiliser VMware. Dans ce cas, ne tenez pas directement compte des instructions suivantes (nous supposons que vous savez comment configure VMware).
+> Note : nous offrons également [une version VMDK de l'image](http://wcours.gel.ulaval.ca/GIF3004/setrh24/setrh2024.zip), si vous souhaitez utiliser VMware. Dans ce cas, ne tenez pas directement compte des instructions suivantes (nous supposons que vous savez comment configurer VMware de manière similaire).
 
 ### 3.1. Lancement de la machine virtuelle
 
