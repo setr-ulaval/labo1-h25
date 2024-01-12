@@ -105,7 +105,7 @@ Nous recommandons finalement l'installation et l'utilisation d'un résolveur DNS
 
 Pour ce faire connectez-vous à [Duck DNS](https://www.duckdns.org). Créez un nom pour votre RPi.
 
-Cependant, cette information n'est pas adéquate dans le contexte qui nous intéresse, comme on veut utiliser les adresses locales pour se connecter au RPi directement. Pour ce faire, voici un [script shell](https://setr-ulaval.github.io/labo1-h24/etc/duckdns.sh) que vous pouvez copier dans `/usr/local/bin/duckdns.sh` sur votre RPi.
+Cependant, cette information n'est pas adéquate dans le contexte qui nous intéresse, comme on veut utiliser les adresses locales pour se connecter au RPi directement. Pour ce faire, nous avons déjà placé un [script shell](https://setr-ulaval.github.io/labo1-h24/etc/duckdns.sh) dans `/usr/local/bin/duckdns.sh` sur l'image de votre RPi, dont le contenu est le suivant :
 
 ```
 #!/bin/bash
@@ -118,7 +118,7 @@ echo url="https://www.duckdns.org/update?domains=$DUCKDNS_DOMAINS&token=$DUCKDNS
 
 Changez les permissions permettant l'exécution du script avec la commande `sudo chmod +x /usr/local/bin/duckdns.sh`.
 
-Éditez ce fichier (avec nano) en changeant les variables `DUCKDNS_TOKEN` et `DUCKDNS_DOMAINS` par ceux que vous obtenez dans les instructions pour le RPi du site de Duck DNS (dans la commande commençant par `echo url=`, utilisez la valeur après `domains=` et `token=`). Ensuite, vous pouvez changer la varible `use_duckdns` à `True` dans le fichier `/etc/rc.local`. Redémarrer votre RPi, et vous devriez pouvoir vous y connecter en utilisant une adresse de type VOTREDOMAINE.duckdns.org.
+Éditez ce fichier (avec nano) en changeant les variables `DUCKDNS_TOKEN` et `DUCKDNS_DOMAINS` par ceux que vous obtenez dans les instructions pour le RPi du site de Duck DNS. Ensuite, vous pouvez éditer le fichier `/etc/rc.local` (i.e., `sudo nano /etc/rc.local`) pour y changer la varible `use_duckdns` à `True`. Redémarrez votre RPi, et vous devriez pouvoir vous y connecter en utilisant une adresse de type VOTREDOMAINE.duckdns.org.
 
 
 ## 5. Installation de l'environnement de compilation croisée
