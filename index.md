@@ -75,11 +75,11 @@ Dans la section _Hard Disk_, sélectionnez *Utiliser un fichier de disque dur vi
 
 <img src="img/vbox_3.png" style="width:800px"/>
 
-_Avant_ de démarrer la machine virtuelle, configurez sa mémoire vidéo en faisant *Clic-droit/Configuration...*. Dans l'onglet "Affichage", ajustez la mémoire vidéo à *128 MB* et *Activer l'accélération 3D*. Si vous observez des plantages ou que l'écran se fige, désactivez au contraire l'accélération 3D. Les transitions seront moins fluides mais la VM fonctionnera sans plantage. La configuration de base est alors normalement terminée, vous pouvez valider et lancer la VM.
+_Avant_ de démarrer la machine virtuelle, configurez sa mémoire vidéo en faisant *Clic-droit/Configuration...*. Dans l'onglet "Affichage", ajustez la mémoire vidéo à *128 MB* et sélectionnez *Activer l'accélération 3D*. Si vous observez des plantages ou que l'écran se fige, désactivez au contraire l'accélération 3D. Les transitions seront moins fluides mais la VM fonctionnera sans plantage. La configuration de base est alors normalement terminée, vous pouvez valider et lancer la VM.
 
 <img src="img/vbox_4.png" style="width:800px"/>
 
-> **Important**: la machine virtuelle Fedora est sensible aux fermetures inopinées. Assurez-vous de toujours éteindre correctement la VM (en utilisant bouton d'arrêt en haut à droite de l'écran de la VM) pour éviter tout problème de corruption de données qui vous forcerait à repartir de zéro.
+> **Important**: la machine virtuelle Fedora est sensible aux fermetures inopinées. Assurez-vous de toujours éteindre correctement la VM (en utilisant bouton d'arrêt en haut à droite de l'écran de la VM) pour éviter tout problème de corruption de données qui vous forcerait à repartir de zéro. Si vous avez suffisamment d'espace disque, vous pouvez également prendre un _snapshot_ (cloner) la machine virtuelle une fois celle-ci configuré à l'issue de ce laboratoire, pour avoir une sauvegarde.
 
 
 ## 4. Configuration de la connexion à distance
