@@ -1,7 +1,7 @@
 //============================================================================
 // Name        : tp1.c
 // Author      : Marc-Andre Gardner
-// Version     : Hiver 2024
+// Version     : Hiver 2025
 // Description : Fichier d'introduction a la compilation croisee et au 
 //               debogage distant
 //============================================================================
@@ -15,7 +15,7 @@
 #define INIT_ORDSAUF1 3				// Le tableau est initialise en ordre croissant, sauf deux elements qui sont inverses
 
 // Nombre d'elements dans le tableau
-#define N_ELEM 2000
+#define N_ELEM 2200
 
 
 int fonctionComparatrice(void const *a, void const *b){
@@ -58,7 +58,7 @@ void maFonctionDeTri(int* base, int num, int size, int (*cmpfunc)(const void*,co
 void initTableau(int* t, int len, char typeinit){
 	// Fonction implementant les differents modes d'initialisation
 	// decrits plus haut
-	//int s;
+
 	switch(typeinit){
 	case INIT_ORDONNE:
 		for(int i=0; i<len; i++)
@@ -102,11 +102,13 @@ int main(int argc, char *argv[]) {
 	// Voir ici pour une description de son utilisation : http://www.cplusplus.com/reference/cstdlib/qsort/
 	qsort(numbers, 					// Notre tableau de nombres a trier
 			N_ELEM, 				// Le nombre d'elements dans le tableau
-			8, 						// Le nombre d'octets par element;
-									// sur un ordinateur 64 bits comme le votre, un int fait 64 bits donc 8 octets
+			8, 						// Le nombre d'octets par element; 64 bits / 8 bits par octet = 8
 			fonctionComparatrice);  // La fonction permettant d'ordonner deux elements
 
 	printf("Premier et dernier elements du tableau (post-tri, fonction de tri de la librairie standard) : %i / %i\n", numbers[0], numbers[N_ELEM-1]);
+	if(numbers[0] > numbers[N_ELEM-1]){
+		printf("\tERREUR! Le premier element du tableau est %i, ce qui est plus grand que le dernier (%i). Le tableau n'est PAS CORRECTEMENT TRIE par qsort.\n", numbers[0], numbers[N_ELEM-1]);
+	}
 
 	// On recommence avec la fonction de tri personnalisee
 	printf("Initialisation du tableau de nombres (mode %i)...\n", modeinit);
@@ -117,6 +119,9 @@ int main(int argc, char *argv[]) {
 	// Sa signature est la meme que qsort, pour faciliter les tests
 	maFonctionDeTri(numbers, N_ELEM, 8, fonctionComparatrice);
 	printf("Premier et dernier elements du tableau (post-tri, fonction de tri personnalisee) : %i / %i\n", numbers[0], numbers[N_ELEM-1]);
+	if(numbers[0] > numbers[N_ELEM-1]){
+		printf("\tERREUR! Le premier element du tableau est %i, ce qui est plus grand que le dernier (%i). Le tableau n'est PAS CORRECTEMENT TRIE par maFonctionDeTri.\n", numbers[0], numbers[N_ELEM-1]);
+	}
 
 	return 0;
 } 

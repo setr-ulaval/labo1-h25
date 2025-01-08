@@ -28,7 +28,7 @@ Insérez la carte MicroSD avec l'image du cours dans la fente prévue à cet eff
 * **Nom d'utilisateur** : _pi_
 * **Mot de passe** : _setrh2025_
 
-Si tout s'est bien passé, vous devriez vous retrouver face à un écran vous demandant de changer votre mot de passe. Le mot de passe par défaut de l'image est "gif3004", nous vous recommandons fortement de le remplacer par un mot de passe plus sécuritaire (et personnel). Pour changer votre mot de passe manuellement, utilisez la commande `passwd` dans le terminal.
+Si tout s'est bien passé, vous devriez vous retrouver face à un écran vous demandant de changer votre mot de passe. Le mot de passe par défaut de l'image est "setrh2025", nous vous recommandons **fortement** de le remplacer par un mot de passe plus sécuritaire (et connu de vous seul). Pour changer votre mot de passe manuellement, utilisez la commande `passwd` dans le terminal.
 
 > **Important** : modifiez le mot de passe avant de vous connecter sur un réseau, sinon tout le monde pourra accéder à votre Raspberry Pi et son contenu!
 
@@ -257,20 +257,31 @@ Finalement, une fois le développement du programme et de la chaîne de compilat
 
 À ce stade, vous devriez être en mesure de lancer une session de débogage à distance sur le Raspberry Pi. Il est maintenant temps d'utiliser tout cela à bon escient! Le fichier qui vous est fourni **contient trois erreurs distinctes** en plus de générer plusieurs avertissements de la part du compilateur. Ces erreurs ne sont pas des erreurs de compilation, mais des erreurs de logique, qui empêchent le programme d'avoir le bon comportement -- et qui, comme vous le constaterez, le font planter. Vous devez les identifier et les corriger en utilisant le débogueur de VSC. Vous devez également pouvoir expliquer leur cause, de même que les corrections à apporter pour que le programme fonctionne correctement. 
 
+> **Note importante** : le fait que le programme s'exécute sans planter est un bon début, mais ne signifie pas que le programme fonctionne **correctement**. Vérifiez la sortie du programme (voir section 6.3.1) pour vous assurez que le tri est effectué correctement!
+
 Finalement, vous devez corriger le code de manière à ce que GCC ne renvoie plus *aucun* warning lors de la compilation (tout en conservant le fonctionnement du programme, bien entendu). Prenez l'habitude de lire et décortiquer les avertissements du compilateur; ceux-ci révèlent parfois des erreurs cachées (et c'est le cas ici...).
+
+> **Note importante** : si vous recompilez un programme sans le modifier, GCC voit qu'il n'a rien à faire et n'effectue pas réellement la compilation. Vous ne verrez dans ce cas aucun warning, même s'il en reste. Pour forcer GCC à recompiler le programme (et donc vous afficher les éventuels warnings restant), utilisez la commande `CMake: Clean Rebuild` (via la palette de commande, voir la section 6.2). C'est ce que nous ferons lors de l'évaluation.
 
 
 ## 7. Modalités d'évaluation
 
-Ce travail est **individuel**. Aucun rapport n'est à remettre, mais vous devez être en mesure de démontrer que votre environnement de développement est fonctionnel et que vous savez utiliser ses fonctions basiques lors d'une évaluation en personne au PLT-0103. Cette évaluation sera faite lors des séances de laboratoire du **31 janvier 2025**. Ce travail compte pour **4%** de la note totale du cours.
+Ce travail est **individuel**. Ce travail compte pour **4%** de la note totale du cours. La moitié de la note (2%) est évaluée en personne lors de l'atelier (voir section 7.1), l'autre moitié (2%) par un questionnaire sur MonPortail. Aucun rapport n'est à remettre, mais vous devez être en mesure de démontrer que votre environnement de développement est fonctionnel et que vous savez utiliser ses fonctions basiques lors de l'évaluation au PLT-0103. Cette évaluation sera faite lors de la séance d'atelier du **31 janvier 2025**. 
+
+
+## 7.1 Évaluation en personne
 
 Le barême d'évaluation détaillé sera le suivant (laboratoire noté sur 20 pts):
 
 * (3 pts) Raspberry Pi fonctionnel, y compris à distance (via SSH);
-* (7 pts) Chaîne de compilation croisée correctement construite et installée dans `$HOME/arm-cross-comp-env`, capacité à produire un binaire ARM;
-* (2 pts) Visual Studio Code installé et fonctionnel, débogage à distance utilisable;
+* (3 pts) Chaîne de compilation croisée fonctionnant correctement, capacité à produire un binaire ARM (par exemple à partir du fichier tp1.c);
+* (4 pts) Visual Studio Code fonctionnel, débogage à distance utilisable sans nécessiter la saisie systématique d'un mot de passe (voyez la section 4.1);
 * (6 pts) Programme débogué: le programme doit *s'exécuter sans erreur et produire un résultat correct*. L'étudiant doit pouvoir expliquer les raisons des erreurs dans le programme initial;
-* (2 pts) Programme corrigé: le programme doit pouvoir être compilé sans générer *aucun warning* et ce en produisant toujours un résultat correct.
+* (4 pts) Programme corrigé: le programme doit pouvoir être compilé sans générer *aucun warning* et ce en produisant toujours un résultat correct.
+
+### 7.2 Questionnaire
+
+Le questionnaire associé sur MonPortail doit également être complété pour **9h30 le 31 janvier 2025** au plus tard. Tout retard entraîne une pénalité de 15% par période de 24h. 
 
 
 ## 8. Ressources et lectures connexes
